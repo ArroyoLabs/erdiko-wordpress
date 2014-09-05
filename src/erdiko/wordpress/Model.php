@@ -1,10 +1,10 @@
 <?php
 /**
  * Drupal Model
- * Base model every drupal model should inherit
+ * Base model every Wordpress model should inherit
  * 
  * @category  	erdiko
- * @package   	drupal
+ * @package   	wordpress
  * @copyright 	Copyright (c) 2014, Arroyo Labs, http://www.arroyolabs.com
  * @author		John Arroyo, john@arroyolabs.com
  */
@@ -23,5 +23,13 @@ class Model extends \erdiko\core\ModelAbstract
 	{
 		$wordpressFunction += "\\";
 		return call_user_func_array($wordpressFunction, $arguments);
+	}
+
+	public function print_post()
+	{
+		$post = \get_post(1); 
+		$title = $post->post_title;
+
+		return $post;
 	}
 }
