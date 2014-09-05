@@ -8,7 +8,7 @@
  * @copyright	Copyright (c) 2014, Arroyo Labs, www.arroyolabs.com
  * @author 		John Arroyo, john@arroyolabs.com
  */
-namespace app\controllers;
+namespace erdiko\wordpress\controllers;
 
 use Erdiko;
 use erdiko\core\Config;
