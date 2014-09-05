@@ -47,7 +47,7 @@ class Example extends \erdiko\core\Controller
 	/**
 	 * Wordpredd example
 	 */
-	public function getWordpress()
+	public function getIndex()
 	{
 		$model = new \erdiko\wordpress\Model;
 
