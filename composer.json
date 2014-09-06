@@ -1,0 +1,20 @@
+{
+	"name":"erdiko/wordpress",
+    "description": "Erdiko Wordpress package",
+    "keywords": ["erdiko", "erdiko-wordpress", "erdiko package"],
+    "homepage": "http://erdiko.org",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Arroyo Labs",
+            "email": "info@arroyolabs.com"
+        }
+    ],
+    "config": {
+        "vendor-dir": "vendor",
+        "minimum-stability": "dev"
+    },
+     "autoload": {
+        "psr-0": { "erdiko\\wordpress": "src/" }
+    }
+}
