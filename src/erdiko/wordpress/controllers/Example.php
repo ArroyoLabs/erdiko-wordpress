@@ -1,7 +1,7 @@
 <?php
 /**
- * Examples Controller
- * Multiple examples of how you can use erdiko.  It includes some simple use cases.
+ * Example WordPress Controller
+ * An example of how to use wordpress with erdiko
  *
  * @category 	app
  * @package   	Example

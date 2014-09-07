@@ -1,6 +1,6 @@
 <?php
 /**
- * Drupal Model
+ * Wordpress Model
  * Base model every Wordpress model should inherit
  * 
  * @category  	erdiko
