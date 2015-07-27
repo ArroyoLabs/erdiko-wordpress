@@ -1,7 +1,8 @@
 <?php
 /**
- * Wordpress bootstrap
- * Assumes Wordpress is installed in the vendor folder in the /lib/wordpress folder.
+ * WordPress bootstrap
+ * Assumes Wordpress is installed in the lib folder in the /lib/wordpress folder.
+ * If you want to run wordpress from another folder you need to change the WORDPRESS_ROOT below
  * 
  * @category  	erdiko
  * @package   	wordpress
