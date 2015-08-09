@@ -26,16 +26,12 @@ class WordPressController extends \erdiko\core\Controller
     {
         // error_log("var: $var");
         $arg_list = func_get_args();
-        print_r($arg_list);
 
         if(!empty($arg_list))
         {
             $response = null;
             if($arg_list[0] == "post"){
-                if(count($arg_list) == 2)
-                    $response = $this->getPost($arg_list[1]);
-                if(count($arg_list) == 5)
-                    $response = $this->getPostByUrl($arg_list[1],$arg_list[2],$arg_list[3],$arg_list[4]);
+                $response = $this->getPost($arg_list[1]);
                 return $response;
             } elseif($arg_list[0] == "page"){
                 $response = $this->getPage($arg_list[1]);
@@ -57,22 +53,15 @@ class WordPressController extends \erdiko\core\Controller
     {
         $content = $this->getView('examples/WordPressViewIndex', null, dirname(__DIR__));
         $this->setContent($content);
-      //  $this->addView('examples/WordPressViewIndex');
     }
     public function getPosts(){
         $model = new \erdiko\wordpress\Model;
         $post = $model->getAllPosts();
-     //   $post = $model->print_post();
         $this->addView('examples/WordPressViewList',$post);
     }
-    public function getPost($id){
+    public function getPost($args){
         $model = new \erdiko\wordpress\Model;
-        $post = $model->getPost($id);
-        $this->addView('examples/WordPressViewDetails',$post);
-    }
-    public function getPostByUrl($year,$month,$date,$name){
-        $model = new \erdiko\wordpress\Model;
-        $post = $model->getPostByUrl($year,$month,$date,$name);
+        $post = $model->getPost($args);
         $this->addView('examples/WordPressViewDetails',$post);
     }
     public function getPages(){

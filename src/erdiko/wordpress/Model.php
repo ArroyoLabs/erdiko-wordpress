@@ -56,19 +56,20 @@ class Model extends \erdiko\core\ModelAbstract
         // return lists of posts as an array
         return $posts_array;
     }
-    public function getPost($postId) {
+    public function getPost($args) {
         global $wpdb;
-        // get post based on provided Post ID
-        $sql = "select * from wp_posts where ID = '".$postId."'";
-        $data = $wpdb->get_results($sql);
-        $newData = $this->wordPressParseData($data);
-        return $newData;
-    }
-    public function getPostByUrl($year,$month,$date,$name) {
-        global $wpdb;
-        $date = $year.'-'.$month.'-'.$date;
-        $sql = "select * from wp_posts where post_date like'".$date."%' and post_name = '".$name."' and
+        $args = rtrim($args,"\/");
+        if(strstr($args, '/')){
+            // get post based on provided Post URL: year/month/day/post_name
+            list($year, $month, $day, $post_name)= explode("/", $args);
+            $date = $year.'-'.$month.'-'.$day;
+            $sql = "select * from wp_posts where post_date like'".$date."%' and post_name = '".$post_name."' and
             post_status = 'publish' and post_type = 'post'";
+        } else {
+            // get post based on provided Post ID
+            $sql = "select * from wp_posts where ID = '" . $args . "' and
+            post_status = 'publish' and post_type = 'post'";
+        }
         $data = $wpdb->get_results($sql);
         $newData = $this->wordPressParseData($data);
         return $newData;
@@ -92,11 +93,12 @@ class Model extends \erdiko\core\ModelAbstract
             'post_type' => 'page',
             'post_status' => 'publish'
         );
-        $pages_array = get_pages($args);
+        $pages_array = \get_pages($args);
         return $pages_array;
     }
     public function getPage($args) {
         global $wpdb;
+        $args = rtrim($args,"\/");
         // get post based on provided Post ID
         $sql = "select * from wp_posts where (post_name = '".$args."' or ID = '".$args."') and
             post_status = 'publish' and post_type = 'page'";
