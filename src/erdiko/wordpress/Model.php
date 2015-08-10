@@ -99,7 +99,7 @@ class Model extends \erdiko\core\ModelAbstract
     public function getPage($args) {
         global $wpdb;
         $args = rtrim($args,"\/");
-        // get post based on provided Post ID
+        // get page based on provided Page ID or Page name
         $sql = "select * from wp_posts where (post_name = '".$args."' or ID = '".$args."') and
             post_status = 'publish' and post_type = 'page'";
         $data = $wpdb->get_results($sql);
@@ -174,9 +174,10 @@ class Model extends \erdiko\core\ModelAbstract
     protected function wordPressParseGallery($matches,$i){
         list($type, $ids)= explode("=", $matches[3][$i]);
         preg_match_all('!\d+!', $ids, $imgIDs);
-        $newTag = '<div class=row>';
+        $newTag = '<div class="slider">';
         foreach ($imgIDs[0] as $id) {
-            $newTag.='<div class="galitem"><figure>';
+            $newTag.='<div class="galitem">';
+            $newTag.='<figure>';
             $newTag.=wp_get_attachment_link($id);
             if(wp_prepare_attachment_for_js($id)['caption']!="")
                 $newTag.= '<figcaption>'.wp_prepare_attachment_for_js($id)['caption'].'</figcaption>';
