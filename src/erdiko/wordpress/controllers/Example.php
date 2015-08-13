@@ -49,7 +49,7 @@ class Example extends \erdiko\core\Controller
 	 */
 	public function getIndex()
 	{
-		$model = new \erdiko\wordpress\Model;
+		$model = new \erdiko\wordpress\model\Wordpress;
 
 		$post = $model->print_post();
 		$content = "<pre>".print_r($post, true)."</pre>";
