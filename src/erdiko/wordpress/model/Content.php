@@ -2,36 +2,23 @@
 /**
  * Wordpress Model
  * Base model every Wordpress model should inherit
- * 
+ *
  * @category  	erdiko
  * @package   	wordpress
  * @copyright 	Copyright (c) 2014, Arroyo Labs, http://www.arroyolabs.com
  * @author		John Arroyo, john@arroyolabs.com
  */
-namespace erdiko\wordpress;
-require_once __DIR__."/bootstrap.php";
+namespace erdiko\wordpress\model;
 
 use \Erdiko;
 
-class Model extends \erdiko\core\ModelAbstract
-{	
-	/** 
-	 * Generic function call.  Allows you call any drupal api function from the object.
-	 * example usage: $model->
-	 */
-	public function __call ( $wordpressFunction, $arguments = array() )
-	{
-		$wordpressFunction += "\\";
-		return call_user_func_array($wordpressFunction, $arguments);
-	}
 
-	public function print_post()
-	{
-        $post = \get_post(1);
-        $title = $post->post_title;
-
-        return $post;
-	}
+class Content extends Wordpress
+{
+    /**
+     * Generic function call.  Allows you call any drupal api function from the object.
+     * example usage: $model->
+     */
     public function getAllPosts() {
         // get a list of all posts
         $args = array(
@@ -99,7 +86,7 @@ class Model extends \erdiko\core\ModelAbstract
     public function getPage($args) {
         global $wpdb;
         $args = rtrim($args,"\/");
-        // get page based on provided Page ID or Page name
+        // get page based on provided Page ID or post_name
         $sql = "select * from wp_posts where (post_name = '".$args."' or ID = '".$args."') and
             post_status = 'publish' and post_type = 'page'";
         $data = $wpdb->get_results($sql);
@@ -141,62 +128,79 @@ class Model extends \erdiko\core\ModelAbstract
         return $data;
     }
     protected function wordPressParseVideo($matches, $i){
+        //video
         list($width, $height, $typeURL) = explode(" ", trim($matches[3][$i]));
         list($type, $url) = explode("=", $typeURL);
-        $newTag = '<video ' . $width . ' ' . $height . ' controls><source src=' . $url . ' type="video/' . $type. '"></video>';
+        $newTag = Erdiko::getView('video', array('width' => $width, 'height' => $height,
+            'url' => $url, 'type' => $type), dirname(__DIR__));
         return $newTag;
     }
     protected function wordPressParseAudio($matches, $i){
+        //audio
         list($type, $url) = explode("=", trim($matches[3][$i]));
-        $newTag = '<audio controls><source src=' . $url . ' type="audio/' . $type. '"></audio>';
+        $newTag = Erdiko::getView('audio', array('url' => $url, 'type' => $type), dirname(__DIR__));
         return $newTag;
     }
     protected function wordPressParsePlaylist($matches,$i){
         if(strpos($matches[3][$i], 'type="video"')!= false) {
-            $newTag = '<video width="560" height="320" id="videoplayarea" controls="controls" src=""></video>';
+            //video playlist
             preg_match_all('!\d+!', $matches[3][$i], $itemIDs);
-            $newTag .= '<ul id="videoplaylist">';
+            $videoItem = "";
             foreach($itemIDs[0] as $id){
-                $newTag .= '<li url="'.wp_prepare_attachment_for_js($id)['url'].'">'.wp_prepare_attachment_for_js($id)['name'].'</li>';
+                $videoItem .= Erdiko::getView('playlistItem', array('url' => wp_prepare_attachment_for_js($id)['url'],
+                    'name' => wp_prepare_attachment_for_js($id)['name']), dirname(__DIR__));
             }
-            $newTag .= '</ul>';
+            $newTag = Erdiko::getView('playlistVideo', array('videoItem' => $videoItem), dirname(__DIR__));
         } else {
-            $newTag = '<audio id="audioplayarea" controls="controls" src=""></audio>';
+            //audio playlist
             preg_match_all('!\d+!', $matches[3][$i], $itemIDs);
-            $newTag .= '<ul id="audioplaylist">';
+            $audioItem = "";
             foreach($itemIDs[0] as $id){
-                $newTag .= '<li url="'.wp_prepare_attachment_for_js($id)['url'].'">'.wp_prepare_attachment_for_js($id)['name'].'</li>';
+                $audioItem .= Erdiko::getView('playlistItem', array('url' => wp_prepare_attachment_for_js($id)['url'],
+                    'name' => wp_prepare_attachment_for_js($id)['name']), dirname(__DIR__));
             }
-            $newTag .= '</ul>';
+            $newTag = Erdiko::getView('playlistAudio', array('audioItem' => $audioItem), dirname(__DIR__));
         }
         return $newTag;
     }
     protected function wordPressParseGallery($matches,$i){
+        //image gallery
         list($type, $ids)= explode("=", $matches[3][$i]);
         preg_match_all('!\d+!', $ids, $imgIDs);
-        $newTag = '<div class="slider">';
+        $imgItem = "";
         foreach ($imgIDs[0] as $id) {
-            $newTag.='<div class="galitem">';
-            $newTag.='<figure>';
-            $newTag.=wp_get_attachment_link($id);
-            if(wp_prepare_attachment_for_js($id)['caption']!="")
-                $newTag.= '<figcaption>'.wp_prepare_attachment_for_js($id)['caption'].'</figcaption>';
-            $newTag.='</figure></div>';
+            $imgItem .= Erdiko::getView('imgGalleryItem', array('url' => wp_get_attachment_link($id),
+                'caption' => wp_prepare_attachment_for_js($id)['caption']), dirname(__DIR__));
         }
-        $newTag .= '</div>';
+        $newTag = Erdiko::getView('imgGalleryCarousel', array('imgItem' => $imgItem), dirname(__DIR__));
         return $newTag;
     }
     protected function wordPressParseCaption($matches,$i){
+        //image caption
         $caption = end(explode(" ", $matches[5][$i]));
         preg_match_all('/<(.*?)>/s', $matches[5][$i], $imgURL);
-        $newTag = '<figure>'.$imgURL[0][1].'<figcaption>'.$caption.'</figcaption>'.'</figure>';
+        $newTag = Erdiko::getView('imgCaption', array('url' => $imgURL[0][1],
+            'caption' => $caption), dirname(__DIR__));
         return $newTag;
     }
     protected function wordPressParseEmbed($matches,$i){
-        preg_match("/v=([^&]+)/i", $matches[5][$i], $id);
-        $newTag = '<iframe src="http://www.youtube.com/embed/'.$id[1].'"'.$matches[3][$i].'></iframe>';
+        if (strpos($matches[5][$i], 'youtube') > 0) {
+            //youtube
+            preg_match("/v=([^&]+)/i", $matches[5][$i], $id);
+            $newTag = Erdiko::getView('embedYoutube', array('url' => $id[1],
+                'size' => $matches[3][$i]), dirname(__DIR__));
+        } else if (strpos($matches[5][$i], 'vimeo') > 0){
+            //vimeo
+            preg_match("/^.*\/(.*)$/", $matches[5][$i], $id);
+            $newTag = Erdiko::getView('embedVimeo', array('url' => $id[1],
+                'size' => $matches[3][$i]), dirname(__DIR__));
+        } else if (strpos(get_headers($matches[5][$i])[8], 'audio') > 0){
+            //Content-Type: audio/
+            preg_match("/^.*\/(.*)$/", get_headers($matches[5][$i])[8], $type);
+            $newTag = Erdiko::getView('audio', array('url' => $matches[5][$i], 'type' => $type[1]), dirname(__DIR__));
+        } else {
+            $newTag = "";
+        }
         return $newTag;
     }
-
-
 }

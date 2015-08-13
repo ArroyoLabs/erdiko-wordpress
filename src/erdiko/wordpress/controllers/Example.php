@@ -55,25 +55,6 @@ class Example extends \erdiko\core\Controller
 		$content = "<pre>".print_r($post, true)."</pre>";
 
 		$this->setContent( $content );
+      //  $this->setContent("test");
 	}
-
-    public function getAllPostsList()
-    {
-        $model = new \erdiko\wordpress\Model;
-
-        $post = $model->getAllPosts();
-        foreach($post as $key=>$array) {
-            $url = get_permalink($array->ID);
-            $newurl = str_replace( home_url(), "", $url );
-
-            echo '<ul><li><a href="'.$newurl.'">' . $array->post_title . '</a></li></ul>';
-            //   echo $array->post_content;
-            $my_excerpt = getExcerpt($array->post_content);
-            echo $my_excerpt;
-            echo "<p></p>";
-        }
-     //   $content = "<pre>".print_r($post, true)."</pre>";
-
-     //   $this->setContent( $content );
-    }
 }

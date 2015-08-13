@@ -1,6 +1,6 @@
 <?php
 
-namespace app\controllers;
+namespace erdiko\wordpress\controllers;
 
 use Erdiko;
 use erdiko\core\Config;
@@ -8,7 +8,7 @@ use erdiko\core\Config;
 /**
  * Example Controller Class
  */
-class WordPressController extends \erdiko\core\Controller
+class Content extends \erdiko\core\Controller
 {
     /** Before */
     public function _before()
@@ -37,7 +37,7 @@ class WordPressController extends \erdiko\core\Controller
                 $response = $this->getPage($arg_list[1]);
                 return $response;
             }
-           if($response == null)
+            if($response == null)
                 $response = $this->_autoaction($var, 'get'); // load action based off of naming conventions
             return $response;
 
@@ -51,27 +51,32 @@ class WordPressController extends \erdiko\core\Controller
      */
     public function getIndex()
     {
-        $content = $this->getView('examples/WordPressViewIndex', null, dirname(__DIR__));
+        $content = $this->getView('wordpressIndex', null, dirname(__DIR__));
         $this->setContent($content);
     }
     public function getPosts(){
-        $model = new \erdiko\wordpress\Model;
+        $model = new \erdiko\wordpress\model\Content;
         $post = $model->getAllPosts();
-        $this->addView('examples/WordPressViewList',$post);
+        $content = $this->getView('wordpressList', $post, dirname(__DIR__));
+        $this->setContent($content);
     }
     public function getPost($args){
-        $model = new \erdiko\wordpress\Model;
+        $model = new \erdiko\wordpress\model\Content;
         $post = $model->getPost($args);
-        $this->addView('examples/WordPressViewDetails',$post);
+        $content = $this->getView('wordpressDetails', $post, dirname(__DIR__));
+        $this->setContent($content);
     }
     public function getPages(){
-        $model = new \erdiko\wordpress\Model;
+        $model = new \erdiko\wordpress\model\Content;
         $post = $model->getAllPages();
-        $this->addView('examples/WordPressViewPageList',$post);
+        $content = $this->getView('wordpressPageList', $post, dirname(__DIR__));
+        $this->setContent($content);
     }
     public function getPage($args){
-        $model = new \erdiko\wordpress\Model;
+        $model = new \erdiko\wordpress\model\Content;
         $post = $model->getPage($args);
-        $this->addView('examples/WordPressViewDetails',$post);
+        $content = $this->getView('wordpressDetails', $post, dirname(__DIR__));
+        $this->setContent($content);
     }
+
 }
