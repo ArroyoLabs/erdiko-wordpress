@@ -14,7 +14,7 @@ use Erdiko;
 use erdiko\core\Config;
 
 /**
- * Example Controller Class
+ * Wordpress example controller class
  */
 class Example extends \erdiko\core\Controller
 {
@@ -45,7 +45,7 @@ class Example extends \erdiko\core\Controller
 	}
 
 	/**
-	 * Wordpredd example
+	 * Wordpress example
 	 */
 	public function getIndex()
 	{
@@ -55,6 +55,5 @@ class Example extends \erdiko\core\Controller
 		$content = "<pre>".print_r($post, true)."</pre>";
 
 		$this->setContent( $content );
-      //  $this->setContent("test");
 	}
 }

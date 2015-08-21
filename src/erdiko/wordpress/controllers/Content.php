@@ -6,7 +6,7 @@ use Erdiko;
 use erdiko\core\Config;
 
 /**
- * Example Controller Class
+ * Wordpress content controller class
  */
 class Content extends \erdiko\core\Controller
 {
@@ -16,6 +16,7 @@ class Content extends \erdiko\core\Controller
         $this->setThemeName('bootstrap');
         $this->prepareTheme();
     }
+
     /**
      * Get
      *
@@ -25,8 +26,8 @@ class Content extends \erdiko\core\Controller
     public function get($var = null)
     {
         // error_log("var: $var");
-        $arg_list = func_get_args();
 
+        $arg_list = func_get_args();
         if(!empty($arg_list))
         {
             $response = null;
@@ -47,31 +48,51 @@ class Content extends \erdiko\core\Controller
     }
 
     /**
-     * Wordpredd example
+     * Wordpress index
      */
     public function getIndex()
     {
         $content = $this->getView('wordpressIndex', null, dirname(__DIR__));
         $this->setContent($content);
     }
+
+    /**
+     * Get posts list
+     */
     public function getPosts(){
         $model = new \erdiko\wordpress\model\Content;
         $post = $model->getAllPosts();
         $content = $this->getView('wordpressList', $post, dirname(__DIR__));
         $this->setContent($content);
     }
+
+    /**
+     * Get post content
+     *
+     * @param Post id || Post URL: year/month/day/post_name
+     */
     public function getPost($args){
         $model = new \erdiko\wordpress\model\Content;
         $post = $model->getPost($args);
         $content = $this->getView('wordpressDetails', $post, dirname(__DIR__));
         $this->setContent($content);
     }
+
+    /**
+     * Get pages list
+     */
     public function getPages(){
         $model = new \erdiko\wordpress\model\Content;
         $post = $model->getAllPages();
         $content = $this->getView('wordpressPageList', $post, dirname(__DIR__));
         $this->setContent($content);
     }
+
+    /**
+     * Get page content
+     *
+     * @param Page id || Page post_name
+     */
     public function getPage($args){
         $model = new \erdiko\wordpress\model\Content;
         $post = $model->getPage($args);

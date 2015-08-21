@@ -32,5 +32,6 @@ If you are using this module with Erdiko Add the following lines to route.json t
 ```
 "/wordpress/": "\erdiko\wordpress\controllers\Example",
 "/wordpress/:alpha": "\erdiko\wordpress\controllers\Example",
+"/wordpress\/([a-z0-9 \-]+)\/([a-z0-9 \-\/]+)": "\erdiko\wordpress\controllers\Content"
 ```
 

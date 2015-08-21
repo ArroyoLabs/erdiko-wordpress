@@ -26,6 +26,9 @@ class Wordpress extends \erdiko\core\ModelAbstract
         return call_user_func_array($wordpressFunction, $arguments);
     }
 
+    /**
+     * print_post example
+     */
     public function print_post()
     {
         $post = \get_post(4);

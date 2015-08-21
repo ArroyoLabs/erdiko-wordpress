@@ -12,15 +12,13 @@ namespace erdiko\wordpress\model;
 
 use \Erdiko;
 
-
 class Content extends Wordpress
 {
     /**
-     * Generic function call.  Allows you call any drupal api function from the object.
-     * example usage: $model->
+     * Get posts list
      */
     public function getAllPosts() {
-        // get a list of all posts
+        //
         $args = array(
             'posts_per_page'   => -1,
             'offset'           => 0,
@@ -40,9 +38,14 @@ class Content extends Wordpress
             'suppress_filters' => true
         );
         $posts_array = \get_posts( $args );
-        // return lists of posts as an array
         return $posts_array;
     }
+
+    /**
+     * Get post content
+     *
+     * @param Post id || Post URL: year/month/day/post_name
+     */
     public function getPost($args) {
         global $wpdb;
         $args = rtrim($args,"\/");
@@ -61,6 +64,10 @@ class Content extends Wordpress
         $newData = $this->wordPressParseData($data);
         return $newData;
     }
+
+    /**
+     * Get pages list
+     */
     public function getAllPages() {
         // get a list of all pages
         $args = array(
@@ -83,6 +90,12 @@ class Content extends Wordpress
         $pages_array = \get_pages($args);
         return $pages_array;
     }
+
+    /**
+     * Get page content
+     *
+     * @param Page id || Page post_name
+     */
     public function getPage($args) {
         global $wpdb;
         $args = rtrim($args,"\/");
@@ -93,7 +106,13 @@ class Content extends Wordpress
         $newData = $this->wordPressParseData($data);
         return $newData;
     }
-    protected function wordPressParseData($data) {
+
+    /**
+     * Parse wordpress media content
+     *
+     * @param post content
+     */
+    public function wordPressParseData($data) {
         $pattern = get_shortcode_regex();
         //\[(\[?)(embed|wp_caption|caption|gallery|playlist|audio|video)(?![\w-])([^\]\/]*(?:\/(?!\])[^\]\/]*)*?)(?:(\/)\]|\](?:([^\[]*+(?:\[(?!\/\2\])[^\[]*+)*+)\[\/\2\])?)(\]?)
         if ( preg_match_all( '/'. $pattern .'/s', $data[0]->post_content, $matches ) && array_key_exists( 2, $matches )){
@@ -127,7 +146,14 @@ class Content extends Wordpress
         }
         return $data;
     }
-    protected function wordPressParseVideo($matches, $i){
+
+    /**
+     * Parse wordpress video
+     *
+     * @param post content
+     * @param index
+     */
+    public function wordPressParseVideo($matches, $i){
         //video
         list($width, $height, $typeURL) = explode(" ", trim($matches[3][$i]));
         list($type, $url) = explode("=", $typeURL);
@@ -135,13 +161,27 @@ class Content extends Wordpress
             'url' => $url, 'type' => $type), dirname(__DIR__));
         return $newTag;
     }
-    protected function wordPressParseAudio($matches, $i){
+
+    /**
+     * Parse wordpress audio
+     *
+     * @param post content
+     * @param index
+     */
+    public function wordPressParseAudio($matches, $i){
         //audio
         list($type, $url) = explode("=", trim($matches[3][$i]));
         $newTag = Erdiko::getView('audio', array('url' => $url, 'type' => $type), dirname(__DIR__));
         return $newTag;
     }
-    protected function wordPressParsePlaylist($matches,$i){
+
+    /**
+     * Parse wordpress audio|| video playlist
+     *
+     * @param post content
+     * @param index
+     */
+    public function wordPressParsePlaylist($matches,$i){
         if(strpos($matches[3][$i], 'type="video"')!= false) {
             //video playlist
             preg_match_all('!\d+!', $matches[3][$i], $itemIDs);
@@ -163,7 +203,14 @@ class Content extends Wordpress
         }
         return $newTag;
     }
-    protected function wordPressParseGallery($matches,$i){
+
+    /**
+     * Parse wordpress image gallery
+     *
+     * @param post content
+     * @param index
+     */
+    public function wordPressParseGallery($matches,$i){
         //image gallery
         list($type, $ids)= explode("=", $matches[3][$i]);
         preg_match_all('!\d+!', $ids, $imgIDs);
@@ -175,7 +222,14 @@ class Content extends Wordpress
         $newTag = Erdiko::getView('imgGalleryCarousel', array('imgItem' => $imgItem), dirname(__DIR__));
         return $newTag;
     }
-    protected function wordPressParseCaption($matches,$i){
+
+    /**
+     * Parse wordpress image caption
+     *
+     * @param post content
+     * @param index
+     */
+    public function wordPressParseCaption($matches,$i){
         //image caption
         $caption = end(explode(" ", $matches[5][$i]));
         preg_match_all('/<(.*?)>/s', $matches[5][$i], $imgURL);
@@ -183,7 +237,14 @@ class Content extends Wordpress
             'caption' => $caption), dirname(__DIR__));
         return $newTag;
     }
-    protected function wordPressParseEmbed($matches,$i){
+
+    /**
+     * Parse wordpress video embed from youtube & vimeo, audio embed
+     *
+     * @param post content
+     * @param index
+     */
+    public function wordPressParseEmbed($matches,$i){
         if (strpos($matches[5][$i], 'youtube') > 0) {
             //youtube
             preg_match("/v=([^&]+)/i", $matches[5][$i], $id);
