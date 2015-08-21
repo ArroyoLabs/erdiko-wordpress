@@ -1,0 +1,12 @@
+.slider{
+    width: 200px;
+    margin: 20px auto;
+    background: white;
+}
+.galitem{
+    padding-left: 25px;
+    text-align: center;
+}
+.slick-prev:before, .slick-next:before{
+    color:royalblue;
+}
