@@ -5,14 +5,14 @@
  *
  * @category  	erdiko
  * @package   	wordpress
- * @copyright 	Copyright (c) 2014, Arroyo Labs, http://www.arroyolabs.com
+ * @copyright 	Copyright (c) 2016, Arroyo Labs, http://www.arroyolabs.com
  * @author		John Arroyo, john@arroyolabs.com
  */
-namespace erdiko\wordpress\model;
+namespace erdiko\wordpress\app\models;
 
 use \Erdiko;
 
-class Content extends Wordpress
+class Content extends erdiko\wordpress\Model
 {
     /**
      * Get posts list

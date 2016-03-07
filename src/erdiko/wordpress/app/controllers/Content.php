@@ -1,6 +1,15 @@
 <?php
-
-namespace erdiko\wordpress\controllers;
+/**
+ * Content Controller
+ * A simple way to get wordpress content into your site
+ * @note this is a work in progress.  It is however a good starting point for running headless
+ *
+ * @category    erdiko
+ * @package     wordpress
+ * @copyright   Copyright (c) 2016, Arroyo Labs, www.arroyolabs.com
+ * @author      John Arroyo, john@arroyolabs.com
+ */
+namespace erdiko\wordpress\app\controllers;
 
 use Erdiko;
 use erdiko\core\Config;
