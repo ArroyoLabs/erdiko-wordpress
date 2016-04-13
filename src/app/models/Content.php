@@ -1,31 +1,40 @@
 <?php
 /**
- * Wordpress Model
- * Base model every Wordpress model should inherit
+ * Wordpress Content Model
+ * View/Service model to grab content from wordpress and render/theme that content
  *
  * @category  	erdiko
  * @package   	wordpress
  * @copyright 	Copyright (c) 2016, Arroyo Labs, http://www.arroyolabs.com
- * @author		John Arroyo, john@arroyolabs.com
+ * @author		  John Arroyo, john@arroyolabs.com
+ * @author      Fangxiang Wang
  */
 namespace erdiko\wordpress\app\models;
 
 use \Erdiko;
 
-class Content extends erdiko\wordpress\Model
+class Content extends \erdiko\wordpress\Model
 {
+  /**
+   * get path for views
+   */
+  public function getViewPath()
+  {
+    return dirname(__DIR__);
+  }
+
     /**
      * Get posts list
      */
-    public function getAllPosts() {
-        //
+    public function getAllPosts($pageSize = -1, $offset = 0, $category = '', $tag = '')
+    {
         $args = array(
-            'posts_per_page'   => -1,
-            'offset'           => 0,
+            'posts_per_page'   => $pageSize,
+            'offset'           => $offset,
             'category'         => '',
-            'category_name'    => '',
+            'category_name'    => $category,
             'orderby'          => 'date',
-            'order'            => 'ASC',
+            'order'            => 'DESC',
             'include'          => '',
             'exclude'          => '',
             'meta_key'         => '',
@@ -35,40 +44,128 @@ class Content extends erdiko\wordpress\Model
             'post_parent'      => '',
             'author'	   => '',
             'post_status'      => 'publish',
-            'suppress_filters' => true
+            'suppress_filters' => true,
         );
         $posts_array = \get_posts( $args );
         return $posts_array;
     }
 
     /**
-     * Get post content
+     * Get posts list
+     */
+    public function getPostsByTag($pageSize = -1, $offset = 0, $tag = '', $taxonomy = 'post_tag')
+    {
+        $args = array(
+            'posts_per_page'   => $pageSize,
+            'offset'           => $offset,
+            'orderby'          => 'date',
+            'order'            => 'DESC',
+            'post_type'        => 'post',
+            'post_status'      => 'publish',
+            'tax_query' => array(
+              array(
+                'taxonomy' => $taxonomy,
+                'field'    => 'slug',
+                'terms'    => $tag,
+              ),
+            ),
+        );
+        $posts_array = \get_posts( $args );
+        return $posts_array;
+    }
+
+    public function getPostThemed($args, $renderWP = false)
+    {
+        $post = $this->getPost($args, $renderWP);
+    }
+
+    public function getPost404()
+    {
+      return (object)['post_title' => '404', 'post_content' => "<p>Sorry, page not found :-(</p>", 'post_type' => "none"];
+    }
+
+    public function getCategories($postId)
+    {
+        $categories = \get_the_category($postId);
+        return empty($categories) ? array() : $categories;
+    }
+
+    public function getTags($postId)
+    {
+        $tags = \get_the_tags($postId);
+        return empty($tags) ? array() : $tags;
+    }
+
+    public function getFeaturedImage($postId)
+    {
+        return \wp_get_attachment_url( get_post_thumbnail_id($postId) );
+    }
+
+    public function getCustomFields($postId)
+    {
+        return \get_post_custom($postId);
+    }
+
+    /**
+     * Get post/page content
      *
      * @param Post id || Post URL: year/month/day/post_name
      */
-    public function getPost($args) {
-        global $wpdb;
+    public function getPost($args, $renderWP = false)
+    {
+        // global $wpdb;
         $args = rtrim($args,"\/");
-        if(strstr($args, '/')){
-            // get post based on provided Post URL: year/month/day/post_name
-            list($year, $month, $day, $post_name)= explode("/", $args);
-            $date = $year.'-'.$month.'-'.$day;
-            $sql = "select * from wp_posts where post_date like'".$date."%' and post_name = '".$post_name."' and
-            post_status = 'publish' and post_type = 'post'";
+
+        // Determine the post id
+        if(is_numeric($args))
+          $postId = $args;
+        else
+          $postId = \url_to_postid($args);
+
+        $post = \get_post($postId);
+        
+        if(empty($post)) {
+          $post = $this->getPost404();
         } else {
-            // get post based on provided Post ID
-            $sql = "select * from wp_posts where ID = '" . $args . "' and
-            post_status = 'publish' and post_type = 'post'";
+          // Decorate basic post with additional post data
+          $post->feat_image = $this->getFeaturedImage($postId);
+          $post->categories = $this->getCategories($postId);
+          $post->tags = $this->getTags($postId);
+          // $post->custom_fields = $this->getCustomFields($postId);
         }
+
+        return $post;
+    }
+
+    public function getPostThumbnail($id)
+    {
+        return \wp_get_attachment_url( \get_post_thumbnail_id($id) );
+    }
+
+    /**
+     * Get post directly from the db (via SQL)
+     */
+    public function getPostDirect($postId)
+    {
+        $sql = "select * from wp_posts where ID = '" . $postId . "' and
+        post_status = 'publish'";
         $data = $wpdb->get_results($sql);
-        $newData = $this->wordPressParseData($data);
-        return $newData;
+
+        return $data[0];
+    }
+
+    public function themeFeaturedImage($image)
+    {
+      $newTag = Erdiko::getView('header_image', array('image_url' => $image), $this->getViewPath());
+
+      return $newTag;
     }
 
     /**
      * Get pages list
      */
-    public function getAllPages() {
+    public function getAllPages()
+    {
         // get a list of all pages
         $args = array(
             'sort_order' => 'asc',
@@ -96,54 +193,74 @@ class Content extends erdiko\wordpress\Model
      *
      * @param Page id || Page post_name
      */
-    public function getPage($args) {
+    public function getPage($args)
+    {
         global $wpdb;
         $args = rtrim($args,"\/");
         // get page based on provided Page ID or post_name
         $sql = "select * from wp_posts where (post_name = '".$args."' or ID = '".$args."') and
             post_status = 'publish' and post_type = 'page'";
         $data = $wpdb->get_results($sql);
-        $newData = $this->wordPressParseData($data);
+        $newData = $this->themeData($data);
         return $newData;
     }
 
     /**
-     * Parse wordpress media content
+     * Theme wordpress media content
      *
-     * @param post content
+     * @param object $postContent
+     * @param boolean $useWpTheme, true to use WP theme functions, false to use erdiko (recommended)
+     * @return mixed $themedPostContent
      */
-    public function wordPressParseData($data) {
-        $pattern = get_shortcode_regex();
-        //\[(\[?)(embed|wp_caption|caption|gallery|playlist|audio|video)(?![\w-])([^\]\/]*(?:\/(?!\])[^\]\/]*)*?)(?:(\/)\]|\](?:([^\[]*+(?:\[(?!\/\2\])[^\[]*+)*+)\[\/\2\])?)(\]?)
-        if ( preg_match_all( '/'. $pattern .'/s', $data[0]->post_content, $matches ) && array_key_exists( 2, $matches )){
-            for($i = 0; $i< count($matches[2]); $i++){
+    public function themeData($data, $useWpTheme = false)
+    {
+        $pattern = \get_shortcode_regex();
+        // echo "<pre>".var_dump($pattern)."</pre>";
+
+        // $data[0]->post_content = \apply_filters('the_content', $data[0]->post_content);
+
+        if($useWpTheme) {
+          // bypass erdiko theme and use the built in WP theming templates
+          $data->post_content = \apply_filters('the_content', $data->post_content);
+
+        }  else {
+          if ( preg_match_all( '/'. $pattern .'/s', $data->post_content, $matches ) && array_key_exists( 2, $matches )) {
+            for($i = 0; $i< count($matches[2]); $i++) {
                 $newTag = "";
                 switch ($matches[2][$i]) {
                     case 'video':
-                        $newTag = $this->wordPressParseVideo($matches,$i);
+                        $newTag = $this->themeVideo($matches,$i);
                         break;
                     case 'audio':
-                        $newTag = $this->wordPressParseAudio($matches,$i);
+                        $newTag = $this->themeAudio($matches,$i);
                         break;
                     case 'playlist':
-                        $newTag = $this->wordPressParsePlaylist($matches,$i);
+                        $newTag = $this->themePlaylist($matches,$i);
                         break;
                     case 'gallery':
-                        $newTag = $this->wordPressParseGallery($matches,$i);
+                        $newTag = $this->themeGallery($matches,$i);
                         break;
                     case 'caption':
-                        $newTag = $this->wordPressParseCaption($matches,$i);
+                        $newTag = $this->themeImage($matches,$i);
+                        break;
+                    case 'wp_caption':
+                        $newTag = $this->themeImage($matches,$i);
                         break;
                     case 'embed':
-                        $newTag = $this->wordPressParseEmbed($matches,$i);
+                        $newTag = $this->themeEmbed($matches,$i);
                         break;
                     default:
-                        echo '';
+                        echo ''; // @note why?
                 }
                 if($newTag!="")
-                    $data[0]->post_content = str_replace($matches[0][$i], $newTag, $data[0]->post_content);
+                    $data->post_content = str_replace($matches[0][$i], $newTag, $data->post_content);
             }
+          }
         }
+
+        // This adds additional styling by WordPress (mostly P tags to space out elements/images)
+        $data->post_content = \apply_filters('the_content', $data->post_content);
+        
         return $data;
     }
 
@@ -153,12 +270,13 @@ class Content extends erdiko\wordpress\Model
      * @param post content
      * @param index
      */
-    public function wordPressParseVideo($matches, $i){
+    public function themeVideo($matches, $i)
+    {
         //video
         list($width, $height, $typeURL) = explode(" ", trim($matches[3][$i]));
         list($type, $url) = explode("=", $typeURL);
         $newTag = Erdiko::getView('video', array('width' => $width, 'height' => $height,
-            'url' => $url, 'type' => $type), dirname(__DIR__));
+            'url' => $url, 'type' => $type), $this->getViewPath());
         return $newTag;
     }
 
@@ -168,10 +286,11 @@ class Content extends erdiko\wordpress\Model
      * @param post content
      * @param index
      */
-    public function wordPressParseAudio($matches, $i){
+    public function themeAudio($matches, $i)
+    {
         //audio
         list($type, $url) = explode("=", trim($matches[3][$i]));
-        $newTag = Erdiko::getView('audio', array('url' => $url, 'type' => $type), dirname(__DIR__));
+        $newTag = Erdiko::getView('audio', array('url' => $url, 'type' => $type), $this->getViewPath());
         return $newTag;
     }
 
@@ -181,25 +300,26 @@ class Content extends erdiko\wordpress\Model
      * @param post content
      * @param index
      */
-    public function wordPressParsePlaylist($matches,$i){
+    public function themePlaylist($matches, $i)
+    {
         if(strpos($matches[3][$i], 'type="video"')!= false) {
             //video playlist
             preg_match_all('!\d+!', $matches[3][$i], $itemIDs);
-            $videoItem = "";
+            $videoItems = "";
             foreach($itemIDs[0] as $id){
-                $videoItem .= Erdiko::getView('playlistItem', array('url' => wp_prepare_attachment_for_js($id)['url'],
-                    'name' => wp_prepare_attachment_for_js($id)['name']), dirname(__DIR__));
+                $videoItems .= Erdiko::getView('playlist_item', array('url' => wp_prepare_attachment_for_js($id)['url'],
+                    'name' => wp_prepare_attachment_for_js($id)['name']), $this->getViewPath());
             }
-            $newTag = Erdiko::getView('playlistVideo', array('videoItem' => $videoItem), dirname(__DIR__));
+            $newTag = Erdiko::getView('playlist_video', array('video_items' => $videoItems), $this->getViewPath());
         } else {
             //audio playlist
             preg_match_all('!\d+!', $matches[3][$i], $itemIDs);
-            $audioItem = "";
-            foreach($itemIDs[0] as $id){
-                $audioItem .= Erdiko::getView('playlistItem', array('url' => wp_prepare_attachment_for_js($id)['url'],
-                    'name' => wp_prepare_attachment_for_js($id)['name']), dirname(__DIR__));
+            $audioItems = "";
+            foreach($itemIDs[0] as $id) {
+                $audioItems .= Erdiko::getView('playlist_item', array('url' => wp_prepare_attachment_for_js($id)['url'],
+                    'name' => wp_prepare_attachment_for_js($id)['name']), $this->getViewPath());
             }
-            $newTag = Erdiko::getView('playlistAudio', array('audioItem' => $audioItem), dirname(__DIR__));
+            $newTag = Erdiko::getView('playlist_audio', array('audio_items' => $audioItems), $this->getViewPath());
         }
         return $newTag;
     }
@@ -210,31 +330,46 @@ class Content extends erdiko\wordpress\Model
      * @param post content
      * @param index
      */
-    public function wordPressParseGallery($matches,$i){
-        //image gallery
+    public function themeGallery($matches, $i)
+    {
         list($type, $ids)= explode("=", $matches[3][$i]);
         preg_match_all('!\d+!', $ids, $imgIDs);
         $imgItem = "";
+        $imgIndicators = "";
+        $ct = 0;
         foreach ($imgIDs[0] as $id) {
-            $imgItem .= Erdiko::getView('imgGalleryItem', array('url' => wp_get_attachment_link($id),
-                'caption' => wp_prepare_attachment_for_js($id)['caption']), dirname(__DIR__));
+            $imgItem .= Erdiko::getView('gallery_carousel_item', array(
+              'url' => \wp_get_attachment_url($id),
+              'caption' => \wp_prepare_attachment_for_js($id)['caption'],
+              'count' => $ct
+              ), $this->getViewPath());
+            $imgIndicators .= Erdiko::getView('gallery_carousel_indicator', array('count' => $ct), $this->getViewPath());
+            $ct++;
         }
-        $newTag = Erdiko::getView('imgGalleryCarousel', array('imgItem' => $imgItem), dirname(__DIR__));
+        $newTag = Erdiko::getView('gallery_carousel', array('image_items' => $imgItem, 'image_indicators' => $imgIndicators), $this->getViewPath());
         return $newTag;
     }
 
     /**
-     * Parse wordpress image caption
+     * Parse and theme wordpress image caption
      *
      * @param post content
      * @param index
+     * @todo clean up: why are we sending all the matches?
      */
-    public function wordPressParseCaption($matches,$i){
-        //image caption
-        $caption = end(explode(" ", $matches[5][$i]));
-        preg_match_all('/<(.*?)>/s', $matches[5][$i], $imgURL);
-        $newTag = Erdiko::getView('imgCaption', array('url' => $imgURL[0][1],
-            'caption' => $caption), dirname(__DIR__));
+    public function themeImage($matches, $i)
+    {
+        // Strip out image and caption
+        $original = $matches[5][$i];
+        preg_match_all('/(\<img.*?\/\>)/s', $matches[5][$i], $imgURL);
+        preg_match_all('/(?!.*\>)(.*)/s', $matches[5][$i], $caption);
+
+        // echo "<pre>original({$i}): ".print_r($matches[5][$i], true)."</pre>";
+        // echo "<pre>parsed({$i}): ".print_r($imgURL, true)."</pre>";
+        // echo "<pre>caption({$i}): ".print_r($caption, true)."</pre>";
+
+        $newTag = Erdiko::getView('image_w_caption', array('url' => $imgURL[0][0],
+            'caption' => $caption[0][0]), $this->getViewPath());
         return $newTag;
     }
 
@@ -244,21 +379,22 @@ class Content extends erdiko\wordpress\Model
      * @param post content
      * @param index
      */
-    public function wordPressParseEmbed($matches,$i){
+    public function themeEmbed($matches, $i)
+    {
         if (strpos($matches[5][$i], 'youtube') > 0) {
             //youtube
             preg_match("/v=([^&]+)/i", $matches[5][$i], $id);
-            $newTag = Erdiko::getView('embedYoutube', array('url' => $id[1],
-                'size' => $matches[3][$i]), dirname(__DIR__));
+            $newTag = Erdiko::getView('embed_youtube', array('url' => $id[1],
+                'size' => $matches[3][$i]), $this->getViewPath());
         } else if (strpos($matches[5][$i], 'vimeo') > 0){
             //vimeo
             preg_match("/^.*\/(.*)$/", $matches[5][$i], $id);
-            $newTag = Erdiko::getView('embedVimeo', array('url' => $id[1],
-                'size' => $matches[3][$i]), dirname(__DIR__));
+            $newTag = Erdiko::getView('embed_vimeo', array('url' => $id[1],
+                'size' => $matches[3][$i]), $this->getViewPath());
         } else if (strpos(get_headers($matches[5][$i])[8], 'audio') > 0){
             //Content-Type: audio/
             preg_match("/^.*\/(.*)$/", get_headers($matches[5][$i])[8], $type);
-            $newTag = Erdiko::getView('audio', array('url' => $matches[5][$i], 'type' => $type[1]), dirname(__DIR__));
+            $newTag = Erdiko::getView('audio', array('url' => $matches[5][$i], 'type' => $type[1]), $this->getViewPath());
         } else {
             $newTag = "";
         }

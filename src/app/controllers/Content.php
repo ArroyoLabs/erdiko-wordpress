@@ -8,11 +8,9 @@
  * @package     wordpress
  * @copyright   Copyright (c) 2016, Arroyo Labs, www.arroyolabs.com
  * @author      John Arroyo, john@arroyolabs.com
+ * @author      Fangxiang Wang
  */
 namespace erdiko\wordpress\app\controllers;
-
-use Erdiko;
-use erdiko\core\Config;
 
 /**
  * Wordpress content controller class
@@ -22,7 +20,7 @@ class Content extends \erdiko\core\Controller
     /** Before */
     public function _before()
     {
-        $this->setThemeName('bootstrap');
+        $this->setThemeName('clean-blog');
         $this->prepareTheme();
     }
 
@@ -32,81 +30,29 @@ class Content extends \erdiko\core\Controller
      * @param mixed $var
      * @return mixed
      */
-    public function get($var = null)
+    public function get($args = null)
     {
-        // error_log("var: $var");
-
-        $arg_list = func_get_args();
-        if(!empty($arg_list))
-        {
-            $response = null;
-            if($arg_list[0] == "post"){
-                $response = $this->getPost($arg_list[1]);
-                return $response;
-            } elseif($arg_list[0] == "page"){
-                $response = $this->getPage($arg_list[1]);
-                return $response;
-            }
-            if($response == null)
-                $response = $this->_autoaction($var, 'get'); // load action based off of naming conventions
-            return $response;
-
-        } else {
-            return $this->getIndex();
-        }
-    }
-
-    /**
-     * Wordpress index
-     */
-    public function getIndex()
-    {
-        $content = $this->getView('wordpressIndex', null, dirname(__DIR__));
-        $this->setContent($content);
-    }
-
-    /**
-     * Get posts list
-     */
-    public function getPosts(){
-        $model = new \erdiko\wordpress\model\Content;
-        $post = $model->getAllPosts();
-        $content = $this->getView('wordpressList', $post, dirname(__DIR__));
-        $this->setContent($content);
-    }
-
-    /**
-     * Get post content
-     *
-     * @param Post id || Post URL: year/month/day/post_name
-     */
-    public function getPost($args){
-        $model = new \erdiko\wordpress\model\Content;
+        $model = new \erdiko\wordpress\app\models\Content;
         $post = $model->getPost($args);
-        $content = $this->getView('wordpressDetails', $post, dirname(__DIR__));
-        $this->setContent($content);
+        $renderedData = $model->themeData($post);
+
+        // $content = $this->getView('post_detail', $renderedData, $model->getViewPath());
+        $view = new \erdiko\wordpress\View('post_detail', $renderedData, $model->getViewPath());
+        $this->setContent($view);
+
+        $this->addWpThemeExtras();
     }
 
-    /**
-     * Get pages list
-     */
-    public function getPages(){
-        $model = new \erdiko\wordpress\model\Content;
-        $post = $model->getAllPages();
-        $content = $this->getView('wordpressPageList', $post, dirname(__DIR__));
-        $this->setContent($content);
+    private function addWpThemeExtras()
+    {
+      // Add Css
+      $this->getResponse()->getTheme()->addCss('/themes/wordpress/css/slick.css');
+      $this->getResponse()->getTheme()->addCss('/themes/wordpress/css/slick-theme.css');
+      $this->getResponse()->getTheme()->addCss('/themes/wordpress/css/slickstyle.css');
+      // Add Js
+      $this->getResponse()->getTheme()->addJs('/themes/wordpress/js/slick.min.js');
+      $this->getResponse()->getTheme()->addJs('/themes/wordpress/js/slickstyle.js');
+      $this->getResponse()->getTheme()->addJs('/themes/wordpress/js/audioplaylist.js');
+      $this->getResponse()->getTheme()->addJs('/themes/wordpress/js/videoplaylist.js');
     }
-
-    /**
-     * Get page content
-     *
-     * @param Page id || Page post_name
-     */
-    public function getPage($args){
-        $model = new \erdiko\wordpress\model\Content;
-        $post = $model->getPage($args);
-        $content = $this->getView('wordpressDetails', $post, dirname(__DIR__));
-        $this->setContent($content);
-    }
-
 }
