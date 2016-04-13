@@ -7,7 +7,7 @@
  * @copyright 	Copyright (c) 2016, Arroyo Labs, http://www.arroyolabs.com
  * @author		John Arroyo, john@arroyolabs.com
  */
-namespace erdiko\wordpress\app\models;
+namespace erdiko\wordpress\models;
 
 class Author extends \erdiko\wordpress\Model
 {

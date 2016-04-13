@@ -1,18 +1,16 @@
 <?php
 /**
- * Author Controller
+ * Posts Controller
  *
  * @category    erdiko
  * @package     wordpress
  * @copyright   Copyright (c) 2016, Arroyo Labs, www.arroyolabs.com
  * @author      John Arroyo, john@arroyolabs.com
  */
-namespace erdiko\wordpress\app\controllers;
+namespace erdiko\wordpress\controllers;
 
-/**
- * Wordpress content controller class
- */
-class Author extends \erdiko\core\Controller
+
+class Posts extends \erdiko\core\Controller
 {
     /** Before */
     public function _before()
@@ -29,9 +27,12 @@ class Author extends \erdiko\core\Controller
      */
     public function get($var = null)
     {
-        $model = new \erdiko\wordpress\app\models\Author;
-        $author = $model->getAuthor($var);
-        $content = $this->getView('author', $author, $model->getViewPath());
-        $this->setContent($content);
+        $model = new \erdiko\wordpress\models\Content;
+        $post = $model->getAllPosts(10, 0);
+        $data = (object)array('title' => 'Posts', 'collection' => $post);
+
+        // Load a custom view
+        $view = new \erdiko\wordpress\View('home_list', $data, $model->getViewPath());
+        $this->setContent($view);
     }
 }

@@ -1,18 +1,16 @@
 <?php
 /**
- * Home Controller
+ * Tag Controller
  *
  * @category    erdiko
  * @package     wordpress
  * @copyright   Copyright (c) 2016, Arroyo Labs, www.arroyolabs.com
  * @author      John Arroyo, john@arroyolabs.com
  */
-namespace erdiko\wordpress\app\controllers;
+namespace erdiko\wordpress\controllers;
 
-/**
- * Wordpress content controller class
- */
-class Home extends \erdiko\core\Controller
+
+class Tag extends \erdiko\core\Controller
 {
     /** Before */
     public function _before()
@@ -29,15 +27,10 @@ class Home extends \erdiko\core\Controller
      */
     public function get($var = null)
     {
-        $config = \Erdiko::getConfig();
+        $model = new \erdiko\wordpress\models\Content;
+        $posts = $model->getPostsByTag(10, 0, $var);
 
-        $model = new \erdiko\wordpress\app\models\Content;
-        $post = $model->getAllPosts(10, 0);
-        $data = (object)array(
-            'title' => "{$config['site']['full_name']}", 
-            'subtitle' => "{$config['site']['tagline']}", 
-            'collection' => $post
-            );
+        $data = (object)array('title' => ucfirst($var), 'collection' => $posts);
 
         // Load a custom view
         $view = new \erdiko\wordpress\View('home_list', $data, $model->getViewPath());

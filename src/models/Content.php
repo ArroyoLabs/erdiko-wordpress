@@ -9,7 +9,7 @@
  * @author		  John Arroyo, john@arroyolabs.com
  * @author      Fangxiang Wang
  */
-namespace erdiko\wordpress\app\models;
+namespace erdiko\wordpress\models;
 
 use \Erdiko;
 

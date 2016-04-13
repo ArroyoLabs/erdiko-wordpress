@@ -31,16 +31,20 @@ These additional instructions work for Erdiko, Laravel and certain other framewo
 	ln -s ../../../lib/wordpress/wp-content/uploads uploads
 ```
 
+
 Erdiko Demo
 -----------
 
-If you are using this module with Erdiko Add the following lines to your routes.json file to enable the wordpress example and content controllers.  They are a good way to get a jumpstart running headless.  Use this as an example or roll your own.  Afterall, all that is really needed to get WordPress data is to create a model that extends erdiko\wordpress\Model.
+If you are using this module with Erdiko Add the following lines to your routes.json file to enable the wordpress example and content controllers.  They are a good way to get a jumpstart running headless.  It give you a FULL headless wordpress site.  Use this as an example, extend the classes in your app or roll your own headless solution.  Afterall, all that is really needed to get WordPress data is to create a model that extends erdiko\wordpress\Model.
 
 Update your /app/config/application/routes.json with:
 
 ```
-"/wordpress/": "\erdiko\wordpress\app\controllers\Example",
-"/wordpress/:alpha": "\erdiko\wordpress\app\controllers\Example",
-"/wordpress\/([a-z0-9 \-]+)\/([a-z0-9 \-\/]+)": "\erdiko\wordpress\app\controllers\Content"
+"/": "\erdiko\wordpress\controllers\Home",
+"author/:alpha": "\erdiko\wordpress\controllers\Author",
+"category/:alpha": "\erdiko\wordpress\controllers\Category",
+"tag/:alpha": "\erdiko\wordpress\controllers\Tag",
+"/:action": "\erdiko\wordpress\controllers\Content"
 ```
 
+We even included a sample theme that is bootstrap based.  Copy the files from your vendor folder vendor/erdiko/wordpress/app/themes/ and vendor/erdiko/wordpress/public/themes/ into your app/themes/ and public/ folder respectively.

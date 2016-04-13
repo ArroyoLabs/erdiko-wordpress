@@ -1,16 +1,16 @@
 <?php
 /**
- * Tag Controller
- *
+ * Category Controller
+ * 
  * @category    erdiko
  * @package     wordpress
  * @copyright   Copyright (c) 2016, Arroyo Labs, www.arroyolabs.com
  * @author      John Arroyo, john@arroyolabs.com
  */
-namespace erdiko\wordpress\app\controllers;
+namespace erdiko\wordpress\controllers;
 
 
-class Tag extends \erdiko\core\Controller
+class Category extends \erdiko\core\Controller
 {
     /** Before */
     public function _before()
@@ -27,8 +27,8 @@ class Tag extends \erdiko\core\Controller
      */
     public function get($var = null)
     {
-        $model = new \erdiko\wordpress\app\models\Content;
-        $posts = $model->getPostsByTag(10, 0, $var);
+        $model = new \erdiko\wordpress\models\Content;
+        $posts = $model->getAllPosts(10, 0, $var);
 
         $data = (object)array('title' => ucfirst($var), 'collection' => $posts);
 

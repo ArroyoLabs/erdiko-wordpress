@@ -10,11 +10,9 @@
  * @author      John Arroyo, john@arroyolabs.com
  * @author      Fangxiang Wang
  */
-namespace erdiko\wordpress\app\controllers;
+namespace erdiko\wordpress\controllers;
 
-/**
- * Wordpress content controller class
- */
+
 class Content extends \erdiko\core\Controller
 {
     /** Before */
@@ -32,7 +30,7 @@ class Content extends \erdiko\core\Controller
      */
     public function get($args = null)
     {
-        $model = new \erdiko\wordpress\app\models\Content;
+        $model = new \erdiko\wordpress\models\Content;
         $post = $model->getPost($args);
         $renderedData = $model->themeData($post);
 
