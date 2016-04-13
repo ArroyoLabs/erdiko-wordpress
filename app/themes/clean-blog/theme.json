@@ -1,0 +1,90 @@
+{
+    "name": "clean-blog",
+    "description": "Bootstrap based blog theme",
+    "credits": "David Miller",
+    "namespace": "/app/themes/bootstrap",
+    "public":"/public/themes/bootstrap",
+    "rules": {
+    "header": {
+        "condition": { "route":"/" },
+        "view": "slideshow"
+        }
+    },
+    "css": [
+        {
+            "name": "default",
+            "file": "/themes/clean-blog/css/bootstrap.css",
+            "active": 1
+        },
+        {
+            "name": "clean-blog",
+            "file": "/themes/clean-blog/css/clean-blog.css",
+            "active": 1
+        },
+        {
+            "name": "custom-font-1",
+            "file": "http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css",
+            "active": 1
+        },
+        {
+            "name": "custom-font-2",
+            "file": "http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic",
+            "active": 1
+        },
+        {
+            "name": "custom-font-3",
+            "file": "http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800",
+            "active": 1
+        }
+    ],
+    "js": {
+        "jquery": {
+            "file": "http://code.jquery.com/jquery-2.2.1.js",
+            "active": 1,
+            "order": 1
+        },
+        "bootstrap": {
+            "file": "/themes/clean-blog/js/bootstrap.js",
+            "active": 1,
+            "order": 2
+        },
+        "default": {
+            "file": "/themes/clean-blog/js/clean-blog.js",
+            "active": 1,
+            "order": 3
+        }
+    },
+    "templates": {
+        "default": {
+            "file": "default"
+        },
+        "fullpage": {
+            "file": "fullpage"
+        },
+        "header": {
+            "file": "page/header"
+        },
+        "footer": {
+            "file": "page/footer"
+        },
+        "analytics": {
+            "file": "page/analytics"
+        }
+    },
+    "layouts": {
+        "1column": {
+            "file": "/themes/clean-blog/templates/layouts/1column"
+        },
+        "2column": {
+            "file": "/themes/clean-blog/templates/layouts/2column"
+        },
+        "3column": {
+            "file": "/themes/clean-blog/templates/layouts/3column"
+        }
+    },
+    "views": {
+    },
+    "defaults": {
+        "feat_image": "/themes/clean-blog/img/home-bg.jpg"
+    }
+}
