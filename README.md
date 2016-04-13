@@ -11,20 +11,25 @@ Installation
 
 * Install wordpress in /lib/wordpress folder or point to your existing wordpress root by adding this to your /app/appstrap.php file
 
+```
     define('WORDPRESS_ROOT', '/this/is/the/wordpress/path');
+```
 
 * Add the erdiko-wordpress package using composer
 
-	composer require erdiko/wordpress 0.2.*
+```
+    composer require erdiko/wordpress 0.2.*
+```
 
 These additional instructions work for Erdiko, Laravel and certain other frameworks. You would need to modify slightly if you are using another framework.  If you don't care about media uploads you could ignore this alltogether.
 
 * Add a symlink for the uploaded files
 
+```
 	mkdir -p public/wp-content
 	cd public/wp-content
 	ln -s ../../../lib/wordpress/wp-content/uploads uploads
-
+```
 
 Erdiko Demo
 -----------
