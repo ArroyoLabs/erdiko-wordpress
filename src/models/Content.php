@@ -15,13 +15,13 @@ use \Erdiko;
 
 class Content extends \erdiko\wordpress\Model
 {
-  /**
-   * get path for views
-   */
-  public function getViewPath()
-  {
-    return dirname(__DIR__);
-  }
+    /**
+     * get path for views
+     */
+    public function getViewPath()
+    {
+        return dirname(__DIR__);
+    }
 
     /**
      * Get posts list
@@ -131,10 +131,29 @@ class Content extends \erdiko\wordpress\Model
           $post->feat_image = $this->getFeaturedImage($postId);
           $post->categories = $this->getCategories($postId);
           $post->tags = $this->getTags($postId);
+          $post->author = $this->getAuthorShort($post->post_author);
           // $post->custom_fields = $this->getCustomFields($postId);
         }
 
         return $post;
+    }
+
+    /**
+     * Return a safer (themable) version of the user object
+     * @param int $userId
+     * @return array $shortProfile, abbreviated user profile
+     */
+    public function getAuthorShort($id)
+    {
+      $author = \get_user_by('ID', $id);
+      $shortProfile = (object)array(
+        "id" => $author->ID,
+        "user_nicename" => $author->user_nicename,
+        "display_name"  => $author->display_name,
+        "profile_url"   => "/author/".$author->user_nicename
+        );
+    
+      return $shortProfile;
     }
 
     public function getPostThumbnail($id)
@@ -399,5 +418,36 @@ class Content extends \erdiko\wordpress\Model
             $newTag = "";
         }
         return $newTag;
+    }
+
+    /**
+    * Get pagination data
+    *
+    */
+    public function getPaginationData($pagesize, $page, $category=null)
+    {
+        // Get number of posts
+        if($category == null) {
+            $countPosts = \wp_count_posts();
+            $count = $countPosts->publish;
+        } else {
+            $postsInCat = \get_term_by('slug', $category, 'category');
+            $count = $postsInCat->count;
+        }
+        $pages = ceil($count / $pagesize);
+
+        // Get previous and next
+        $previous  = (($page - 1) < 1) ? null : $page - 1;
+        $next = ($page == $pages) ? null : $page + 1;
+
+        return array(
+            'pagesize' => $pagesize,
+            'page' => $page,
+            'pages' => $pages,
+            'previous' => $previous,
+            'next' => $next,
+            'post_count' => $count,
+            'offset' => ($page-1)*$pagesize
+            );
     }
 }

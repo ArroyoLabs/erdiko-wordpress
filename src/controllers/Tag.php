@@ -12,13 +12,6 @@ namespace erdiko\wordpress\controllers;
 
 class Tag extends \erdiko\core\Controller
 {
-    /** Before */
-    public function _before()
-    {
-        $this->setThemeName('clean-blog');
-        $this->prepareTheme();
-    }
-
     /**
      * Get
      *
@@ -33,7 +26,11 @@ class Tag extends \erdiko\core\Controller
         $data = (object)array('title' => ucfirst($var), 'collection' => $posts);
 
         // Load a custom view
-        $view = new \erdiko\wordpress\View('home_list', $data, $model->getViewPath());
+        $view = new \erdiko\wordpress\View('post_list', $data, $model->getViewPath());
+
+        $this->setTitle("Tag {$data->title}");
+        $this->addMeta('description', "Posts with tag {$data->title}"); // Meta from the config
+
         $this->setContent($view);
     }
 }

@@ -1,10 +1,7 @@
 <?php 
 // @todo figure out better way to inject a default
 if(empty($data->feat_image))
-  $data->feat_image = '/themes/clean-blog/img/home-bg.jpg';
-
-// Get author info @todo move to the model
-$author = \get_user_by( 'ID', $data->post_author ); // get_user_by('slug', $id)
+  $data->feat_image = '/themes/clean-blog/img/post-bg.jpg';
 ?>
 <header class="intro-header" style="background-image: url('<?php echo $data->feat_image ?>')">
     <div class="container">
@@ -13,7 +10,7 @@ $author = \get_user_by( 'ID', $data->post_author ); // get_user_by('slug', $id)
                 <div class="post-heading">
                     <h1><?php echo $data->post_title ?></h1>
                     <?php if($data->post_type == 'post') : ?>
-                    <span class="meta">Posted by <a href="/author/<?php echo $author->user_nicename ?>"><?php echo $author->display_name ?></a> on <?php echo date('n/j/Y', strtotime($data->post_date)) ?></span>
+                    <span class="meta">Posted by <a href="<?php echo $data->author->profile_url ?>"><?php echo $data->author->display_name ?></a> on <?php echo date('n/j/Y', strtotime($data->post_date)) ?></span>
                     <?php endif ?>
                 </div>
             </div>

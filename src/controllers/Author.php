@@ -12,13 +12,6 @@ namespace erdiko\wordpress\controllers;
 
 class Author extends \erdiko\core\Controller
 {
-    /** Before */
-    public function _before()
-    {
-        $this->setThemeName('clean-blog');
-        $this->prepareTheme();
-    }
-
     /**
      * Get
      *
@@ -30,6 +23,17 @@ class Author extends \erdiko\core\Controller
         $model = new \erdiko\wordpress\models\Author;
         $author = $model->getAuthor($var);
         $content = $this->getView('author', $author, $model->getViewPath());
+
+        // echo "<pre>".print_r($author, true)."</pre>";
+
+        /** SEO **/
+        // Title
+        $this->setTitle("{$author->user->display_name}'s profile");
+        // Page description
+        $this->addMeta('description', "Profile for {$author->user->display_name}");
+        // Author
+        $this->addMeta('author', $author->user->display_name);
+
         $this->setContent($content);
     }
 }

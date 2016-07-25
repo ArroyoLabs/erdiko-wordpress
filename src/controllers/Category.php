@@ -12,13 +12,6 @@ namespace erdiko\wordpress\controllers;
 
 class Category extends \erdiko\core\Controller
 {
-    /** Before */
-    public function _before()
-    {
-        $this->setThemeName('clean-blog');
-        $this->prepareTheme();
-    }
-
     /**
      * Get
      *
@@ -27,13 +20,30 @@ class Category extends \erdiko\core\Controller
      */
     public function get($var = null)
     {
+        $config = \Erdiko::getConfig();
         $model = new \erdiko\wordpress\models\Content;
-        $posts = $model->getAllPosts(10, 0, $var);
+        
+        // Get paging info
+        $pagesize = empty($_REQUEST['pagesize']) ? 
+            $config['content']['defaults']['pagesize'] : $_REQUEST['pagesize'];
+        $page = empty($_REQUEST['page']) ? 1 : $_REQUEST['page'];
+        $pagingData = $model->getPaginationData($pagesize, $page, $var);
 
-        $data = (object)array('title' => ucfirst($var), 'collection' => $posts);
+        $posts = $model->getAllPosts($pagesize, $pagingData['offset'], $var); // Get posts
+        $data = (object)array(
+            'title' => ucfirst($var),
+            'collection' => $posts,
+            'paging' => $pagingData,
+            'feat_image' => $config['content']['defaults']['feat_image'],
+            'url' => "/category/{$var}"
+            );
 
         // Load a custom view
-        $view = new \erdiko\wordpress\View('home_list', $data, $model->getViewPath());
+        $view = new \erdiko\wordpress\View('post_list', $data, $model->getViewPath());
+
+        $this->setTitle("Category {$data->title}");
+        $this->addMeta('description', "Posts in category {$data->title}");
+
         $this->setContent($view);
     }
 }

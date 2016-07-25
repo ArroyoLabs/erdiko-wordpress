@@ -56,8 +56,11 @@ class View extends \erdiko\core\View
      */
     function getBodyExcerpt($body, $length = 255)
     {
-        $post = preg_replace("/(\[.*\])/","",$body);
-        $post = preg_replace("/(\<img.*\>)/","",$post);
+        $post = strip_tags($body);
+
+        // old method
+        // $post = preg_replace("/(\[.*\])/","",$body);
+        // $post = preg_replace("/(\<img.*\>)/","",$post);
         return substr($post, 0, $length);
     }
 

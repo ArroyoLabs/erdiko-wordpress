@@ -7,15 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-
-    <meta name="description" content="">
-    <meta name="author" content="">
-
     <?php
     /** Spit out meta tags **/
-    foreach ($data->getMeta() as $meta) {
-        echo '<meta name="'.$meta['name'].'" content="'.$meta['content'].'" >';
-    }
+    foreach ($data->getMeta() as $meta)
+        echo "<meta name=\"{$meta['name']}\" content=\"{$meta['content']}\">\n";
     ?>
 
     <title><?php echo $data->getPageTitle() ?></title>

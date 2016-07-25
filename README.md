@@ -18,7 +18,7 @@ Installation
 * Add the erdiko-wordpress package using composer
 
 ```
-    composer require erdiko/wordpress ^0.3.1
+    composer require erdiko/wordpress ^0.3.*
 ```
 
 These additional instructions work for Erdiko, Laravel and certain other frameworks. You would need to modify slightly if you are using another framework.  If you don't care about media uploads you could ignore this alltogether.

@@ -15,13 +15,6 @@ namespace erdiko\wordpress\controllers;
 
 class Content extends \erdiko\core\Controller
 {
-    /** Before */
-    public function _before()
-    {
-        $this->setThemeName('clean-blog');
-        $this->prepareTheme();
-    }
-
     /**
      * Get
      *
@@ -38,7 +31,18 @@ class Content extends \erdiko\core\Controller
         $view = new \erdiko\wordpress\View('post_detail', $renderedData, $model->getViewPath());
         $this->setContent($view);
 
-        $this->addWpThemeExtras();
+        /** SEO **/
+        // Page Title
+        $this->setTitle($post->post_title);
+        // Page description
+        if(empty($post->post_excerpt))
+          $this->addMeta('description', $post->post_title);
+        else
+          $this->addMeta('description', $post->post_excerpt);
+        // Author
+        $this->addMeta('author', $post->author->display_name);
+
+        // $this->addWpThemeExtras();
     }
 
     private function addWpThemeExtras()

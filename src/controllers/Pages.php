@@ -12,12 +12,6 @@ namespace erdiko\wordpress\controllers;
 
 class Pages extends \erdiko\core\Controller
 {
-    /** Before */
-    public function _before()
-    {
-        $this->setThemeName('clean-blog');
-        $this->prepareTheme();
-    }
 
     /**
      * Get
@@ -33,6 +27,8 @@ class Pages extends \erdiko\core\Controller
 
         // Load a custom view
         $view = new \erdiko\wordpress\View('home_list', $data, $model->getViewPath());
+
+        // @todo add a page title
         $this->setContent($view);
     }
 }

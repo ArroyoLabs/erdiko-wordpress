@@ -12,13 +12,6 @@ namespace erdiko\wordpress\controllers;
 
 class Posts extends \erdiko\core\Controller
 {
-    /** Before */
-    public function _before()
-    {
-        $this->setThemeName('clean-blog');
-        $this->prepareTheme();
-    }
-
     /**
      * Get
      *
@@ -27,12 +20,35 @@ class Posts extends \erdiko\core\Controller
      */
     public function get($var = null)
     {
+        $config = \Erdiko::getConfig();
         $model = new \erdiko\wordpress\models\Content;
-        $post = $model->getAllPosts(10, 0);
-        $data = (object)array('title' => 'Posts', 'collection' => $post);
+        
+        // Get paging info
+        $pagesize = empty($_REQUEST['pagesize']) ? 
+            $config['content']['defaults']['pagesize'] : $_REQUEST['pagesize'];
+        $page = empty($_REQUEST['page']) ? 1 : $_REQUEST['page'];
+        $offset = $page*$pagesize;
+        $pagingData = $model->getPaginationData($pagesize, $page);
+
+        $post = $model->getAllPosts($pagesize, $pagingData['offset']);
+        $data = (object)array(
+            'title' => $config['site']['full_name'],
+            'subtitle' => $config['site']['tagline'],
+            'collection' => $post,
+            'paging' => $pagingData,
+            'feat_image' => $config['content']['defaults']['feat_image'],
+            'url' => "/"
+            );
 
         // Load a custom view
-        $view = new \erdiko\wordpress\View('home_list', $data, $model->getViewPath());
+        $view = new \erdiko\wordpress\View('post_list', $data, $model->getViewPath());
+
+        /** SEO **/
+        // Page Title
+        $this->setTitle($config['site']['full_name']);
+        // Meta from the config
+        $this->setMeta($config['site']['meta']);
+
         $this->setContent($view);
     }
 }
