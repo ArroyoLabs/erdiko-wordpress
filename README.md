@@ -1,29 +1,68 @@
 erdiko-wordpress
 ================
 
-Run WordPress headless
+Run your your WordPress site headless
 
-You can use this module with any composer based php framework.
+You can use this module with any composer based php framework by simply running, composer require erdiko/wordpress.
 
 
 Installation
 ------------
 
-* Install wordpress in /lib/wordpress folder or point to your existing wordpress root by adding this to your /app/appstrap.php file
+#1 Install WordPress
+We recommend installing WordPress in /lib/wordpress or its own folder at the same level as your main site.  For instance /wordpress and /[my-website].  However it can be anywhere as long is the codebase is accessible.  Follow the WordPress docs on how to install WordPress.
 
+***Important*** If your WordPress codebase is in /lib/wordpress and /lib is at the same level as your vendor folder then you can skip the rest of step #1.
+
+Add this to your codebase.
 ```
     define('WORDPRESS_ROOT', '/this/is/the/wordpress/path');
 ```
 
-* Add the erdiko-wordpress package using composer
+This could be added in a constants file, bootstrap file or index.php.  Follow the conventions of your framework.  If you are using Erdiko it should go in the /[my-website]/app/appstrap.php file.
+
+
+#2 Add the erdiko/wordpress package using composer
 
 ```
-    composer require erdiko/wordpress ^0.3.*
+    composer require erdiko/wordpress
 ```
 
-These additional instructions work for Erdiko, Laravel and certain other frameworks. You would need to modify slightly if you are using another framework.  If you don't care about media uploads you could ignore this alltogether.
+Create a full headless site with Erdiko
+------------------------
 
-* Add a symlink for the uploaded files
+These additional instructions are for creating a complete headless blog using Erdiko.  All CMS data is coming from WordPress and is rendered in a clean bootstrap based theme.  We have included controllers, models, views and a full theme.
+
+#1 Install Erdiko
+Using composer, it is a very simple to create an erdiko project.
+
+	composer create erdiko/erdiko [my-project-name]
+
+More information available at [http://erdiko.org](http://erdiko.org/)
+
+#2 Add your routes
+
+Add the following lines to your routes.json file to enable the wordpress example and content controllers.  It give you a FULL headless wordpress site.  Use this as an example, extend the classes in your app or roll your own headless solution.  Keep in mind, all that is really needed to pull WordPress data is to create a model that extends erdiko\wordpress\Model.
+
+Update your /app/config/default/routes.json with:
+
+```
+"/": "\erdiko\wordpress\controllers\Posts",
+"author/:alpha": "\erdiko\wordpress\controllers\Author",
+"category/:alpha": "\erdiko\wordpress\controllers\Category",
+"tag/:alpha": "\erdiko\wordpress\controllers\Tag",
+"/:action": "\erdiko\wordpress\controllers\Content"
+```
+
+Feel free to adjust accordingly.
+
+#2 Copy the default theme
+
+We even included a sample theme that is bootstrap based.  Copy the files from your vendor folder vendor/erdiko/wordpress/app/themes/ and vendor/erdiko/wordpress/public/themes/ into your app/themes/ and public/themes folder respectively.
+
+Theme is based on a [Start Bootstrap](https://startbootstrap.com/template-overviews/clean-blog/) theme.
+
+#3 Add a symlink for the uploaded files (optional)
 
 ```
 	mkdir -p public/wp-content
@@ -31,20 +70,11 @@ These additional instructions work for Erdiko, Laravel and certain other framewo
 	ln -s ../../../lib/wordpress/wp-content/uploads uploads
 ```
 
+Notes
+--------
 
-Erdiko Demo
------------
+We welcome your feedback.  Let us know how we can improve this package.
 
-If you are using this module with Erdiko Add the following lines to your routes.json file to enable the wordpress example and content controllers.  They are a good way to get a jumpstart running headless.  It give you a FULL headless wordpress site.  Use this as an example, extend the classes in your app or roll your own headless solution.  Afterall, all that is really needed to get WordPress data is to create a model that extends erdiko\wordpress\Model.
+If anyone is interested in helping us port this to Laravel or Symfony please send us a message.  We would love to support more frameworks!
 
-Update your /app/config/application/routes.json with:
-
-```
-"/": "\erdiko\wordpress\controllers\Home",
-"author/:alpha": "\erdiko\wordpress\controllers\Author",
-"category/:alpha": "\erdiko\wordpress\controllers\Category",
-"tag/:alpha": "\erdiko\wordpress\controllers\Tag",
-"/:action": "\erdiko\wordpress\controllers\Content"
-```
-
-We even included a sample theme that is bootstrap based.  Copy the files from your vendor folder vendor/erdiko/wordpress/app/themes/ and vendor/erdiko/wordpress/public/themes/ into your app/themes/ and public/ folder respectively.
+Sponsored by [Arroyo Labs](http://arroyolabs.com/)
