@@ -83,8 +83,5 @@
         }
     },
     "views": {
-    },
-    "defaults": {
-        "feat_image": "/themes/clean-blog/img/home-bg.jpg"
     }
 }

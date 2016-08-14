@@ -19,9 +19,21 @@
                     $menu = $data['menu']['main'];
                     if ($menu) :
                         foreach ($menu as $item) : ?>
+                            <?php if(empty($item["submenu"])) : ?>
                             <li>
-                                <a href="<?php echo  $item["href"]; ?>"><?php echo  $item["title"]; ?></a>
+                                <a href="<?php echo $item["href"]; ?>"><?php echo $item["title"]; ?></a>
                             </li>
+                            <?php else : ?>
+                            <li class="dropdown">
+                                <a href="<?php echo $item["href"]; ?>" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo $item["title"]; ?> <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <?php foreach ($item["submenu"] as $subitem): ?>
+                                        <li><a href="<?php echo $subitem["href"]; ?>"><?php echo $subitem["title"]; ?></a></li>
+                                    <?php endforeach ?>
+                                </ul>
+                            </li>
+                            <?php endif ?>
+                            
                             <?php
                         endforeach;
                     endif; ?>

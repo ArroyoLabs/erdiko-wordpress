@@ -43,12 +43,8 @@ class Posts extends \erdiko\core\Controller
         // Load a custom view
         $view = new \erdiko\wordpress\View('post_list', $data, $model->getViewPath());
 
-        /** SEO **/
         // Page Title
         $this->setTitle($config['site']['full_name']);
-        // Meta from the config
-        $this->setMeta($config['site']['meta']);
-
         $this->setContent($view);
     }
 }
