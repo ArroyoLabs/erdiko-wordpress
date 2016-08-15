@@ -2,6 +2,9 @@
 /**
  * Wordpress Content Model
  * View/Service model to grab content from wordpress and render/theme that content
+ * 
+ * IMPORTANT this model requires the erdiko/erdiko-core package
+ * You can install it using, composer require erdiko/erdiko-core
  *
  * @category  	erdiko
  * @package   	wordpress
@@ -11,7 +14,7 @@
  */
 namespace erdiko\wordpress\models;
 
-use \Erdiko;
+use \erdiko\core\Helper as Erdiko;
 
 class Content extends \erdiko\wordpress\Model
 {

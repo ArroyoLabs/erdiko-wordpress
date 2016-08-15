@@ -12,7 +12,6 @@ namespace erdiko\wordpress\controllers;
 
 class Pages extends \erdiko\core\Controller
 {
-
     /**
      * Get
      *

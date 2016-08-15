@@ -11,7 +11,6 @@
 namespace erdiko\wordpress;
 require_once __DIR__."/bootstrap.php";
 
-use \Erdiko;
 
 class Model
 {
