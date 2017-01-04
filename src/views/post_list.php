@@ -2,19 +2,20 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <?php 
-                foreach($data->collection as $key => $array) {
-                    $url = get_permalink($array->ID);
-                    $newUrl = str_replace( home_url(), "", $url ); // strip domain (since it's headless)
-                    ?>
+                <?php foreach($data->collection as $key => $post): ?>
                 <div class="post-list-item">
-                    <h3><a href="<?php echo $newUrl ?>"><?php echo $array->post_title ?></a></h3>
+                    <h3><a href="<?php echo $this->getHeadlessPermalink($post->ID) ?>"><?php echo $post->post_title ?></a></h3>
                     <p class="post-teaser">
-                        <?php echo $this->getBodyExcerpt($array->post_content) ?>
+                        <?php 
+                        if(empty($post->post_excerpt))
+                            echo $this->getBodyExcerpt($post->post_content);
+                        else
+                            echo $post->post_excerpt;
+                        ?>
                     </p>
                     <div class="read-more"><a href="<?php echo $newUrl ?>">Read more...</a></div>
                 </div>
-                <?php } ?>
+                <?php endforeach ?>
             </div>
         </div>
     </div>

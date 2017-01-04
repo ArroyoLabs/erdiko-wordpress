@@ -135,10 +135,76 @@ class Content extends \erdiko\wordpress\Model
           $post->categories = $this->getCategories($postId);
           $post->tags = $this->getTags($postId);
           $post->author = $this->getAuthorShort($post->post_author);
+          $post->custom_fields = get_post_custom($postId);
           // $post->custom_fields = $this->getCustomFields($postId);
         }
 
         return $post;
+    }
+
+    /**
+     * getMeta
+     * Get SEO meta tags for the html page header
+     * @param $post
+     * @param array $additional, additional meta tags (takes precedence over $post)
+     * @return array $meta
+     */
+    public function getMeta($post, $additional=array())
+    {
+        if(!is_array($additional))
+          throw new \Exception("Error in Content::getMeta(), additional meta tags must be an array");
+
+        // Get description
+        if(!empty($post->post_excerpt))
+            $description = $post->post_excerpt;
+        elseif(!empty($post->custom_fields['erdiko_seo_description'][0]))
+            $description = $post->custom_fields['erdiko_seo_description'][0];
+        else
+            $description = $post->post_title;
+
+        // Get formatted post dates
+        $postDate = date('c', strtotime($post->post_date));
+        $updateDate = date('c', strtotime($post->post_modified));
+        
+        // Description & author
+        $meta['description'] = $description;
+        $meta['author'] = $post->author->display_name;
+
+        // Open Graph
+        // $meta['og:locale'] = 'en_US'; // coming from application.json now
+        $meta['og:type'] = 'blog';
+        $meta['og:title'] = $post->post_title;
+        $meta['og:description'] = $description;
+        // @todo remove 'http://' and set dynamically somehow
+        $meta['og:url'] = "http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+        $meta['og:updated_time'] = $updateDate;
+        $meta['og:image'] = $post->feat_image;
+
+        // Article
+        // $meta['article:publisher'] = "https://www.facebook.com/yoast";
+        // $meta['article:author'] = "https://www.facebook.com/jdevalk";
+        $meta['article:section'] = 'Blog';
+        $meta['article:published_time'] = $postDate;
+        $meta['article:modified_time'] = $updateDate;
+
+        // Article Tags
+        $tags = array();
+        foreach($post->tags as $tag)
+            $tags[] = $tag->name; // $tag->slug
+        if (count($tags) > 0)
+            $meta['article:tag'] = $tags;
+
+        // Twitter Card
+        $meta['twitter:card'] = "summary_large_image";
+        $meta['twitter:description'] = $description;
+        $meta['twitter:title'] = $post->post_title;
+        $meta['twitter:image'] = $post->feat_image;
+        // $meta['twitter:creator'] = "@erdiko";
+
+        // Override any default meta values (from post) with $additional meta supplied
+        $meta = array_merge($meta, $additional);
+
+        return $meta;
     }
 
     /**

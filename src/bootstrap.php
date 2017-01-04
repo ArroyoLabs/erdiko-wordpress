@@ -15,7 +15,7 @@ define('WP_USE_THEMES', false);
 
 // if not set in the appstrap.php (or elsewhere) default it to lib/wordpress
 if(empty(WORDPRESS_ROOT))
-    define('WORDPRESS_ROOT', ROOT.'/lib/wordpress');
+    define('WORDPRESS_ROOT', ERDIKO_ROOT.'/lib/wordpress');
 
 if ( !isset($wp_did_header) ) {
 

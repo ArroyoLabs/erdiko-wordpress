@@ -2,13 +2,13 @@
 /**
  * Content Controller
  * A simple way to get wordpress content into your site
- * @note this is a work in progress.  It is however a good starting point for running headless
+ * @note this is a work in progress. 
+ * It is however a good starting point for running headless
  *
  * @category    erdiko
  * @package     wordpress
  * @copyright   Copyright (c) 2016, Arroyo Labs, www.arroyolabs.com
  * @author      John Arroyo, john@arroyolabs.com
- * @author      Fangxiang Wang
  */
 namespace erdiko\wordpress\controllers;
 
@@ -34,17 +34,13 @@ class Content extends \erdiko\core\Controller
         /** SEO **/
         // Page Title
         $this->setTitle($post->post_title);
-        // Page description
-        if(empty($post->post_excerpt))
-          $this->addMeta('description', $post->post_title);
-        else
-          $this->addMeta('description', $post->post_excerpt);
-        // Author
-        $this->addMeta('author', $post->author->display_name);
-
-        // $this->addWpThemeExtras();
+        
+        // Get meta tags from the post
+        $meta = $model->getMeta($post);
+        $this->setMeta($meta);
     }
 
+    // http://kenwheeler.github.io/slick, http://videojs.com, https://open.521dimensions.com/amplitudejs
     private function addWpThemeExtras()
     {
       // Add Css

@@ -1,6 +1,7 @@
 <?php
 /**
  * View
+ * Convenient functions for manipulating WordPress data in erdiko views
  *
  * @category   Erdiko
  * @package    WordPress
@@ -54,7 +55,7 @@ class View extends \erdiko\core\View
      * @param string $body
      * @param int $length
      */
-    function getBodyExcerpt($body, $length = 255)
+    public function getBodyExcerpt($body, $length = 255)
     {
         $post = strip_tags($body);
 
@@ -64,8 +65,22 @@ class View extends \erdiko\core\View
         return substr($post, 0, $length);
     }
 
-    function getPostThumbnail($postId)
+    /**
+     *
+     */
+    public function getPostThumbnail($postId)
     {
         return \wp_get_attachment_url( \get_post_thumbnail_id($postId) );
+    }
+
+    /**
+     * Get headless friendly permalink
+     * @param int $postId
+     * @return string $link
+     */
+    function getHeadlessPermalink($postId)
+    {
+        $url = get_permalink($postId);
+        return str_replace( home_url(), "", $url ); // strip domain (since it's headless)
     }
 }
