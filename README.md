@@ -1,7 +1,9 @@
 erdiko-wordpress
 ================
 
-Run your your WordPress site headless
+* Run your your WordPress site headless
+
+* Pull content from your wordpress CMS
 
 You can use this module with any composer based php framework by simply running, composer require erdiko/wordpress.
 
