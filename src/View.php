@@ -5,7 +5,7 @@
  *
  * @category   Erdiko
  * @package    WordPress
- * @copyright  Copyright (c) 2016, Arroyo Labs, http://www.arroyolabs.com
+ * @copyright  Copyright (c) 2017, Arroyo Labs, http://www.arroyolabs.com
  * @author     John Arroyo
  */
 namespace erdiko\wordpress;

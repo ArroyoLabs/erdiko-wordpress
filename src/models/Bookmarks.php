@@ -8,9 +8,8 @@
  *
  * @category  	erdiko
  * @package   	wordpress
- * @copyright 	Copyright (c) 2016, Arroyo Labs, http://www.arroyolabs.com
+ * @copyright 	Copyright (c) 2017, Arroyo Labs, http://www.arroyolabs.com
  * @author		  John Arroyo, john@arroyolabs.com
- * @author      Fangxiang Wang
  */
 namespace erdiko\wordpress\models;
 
