@@ -14,6 +14,8 @@ require_once __DIR__."/bootstrap.php";
 
 class View extends \erdiko\core\View
 {
+    use \erdiko\wordpress\traits\ImageTrait;
+
     /**
      * Get rendered category links
      *
@@ -22,11 +24,13 @@ class View extends \erdiko\core\View
     public function getCategoryLinks($post)
     {
         $html = "";
-        // $html = "<pre>".print_r($post->categories, true)."</pre>";
 
-        foreach($post->categories as $category)
+        foreach($post->categories as $idx => $category)
         {
-            $html .= "<a href=\"/category/{$category->slug}\">{$category->name}</a> ";
+            $html .= "<a href=\"/category/{$category->slug}\">{$category->name}</a>";
+            if($idx < (count($post->categories) - 1)) {
+                $html .= ", ";
+            }
         }
 
         return $html;
@@ -41,9 +45,12 @@ class View extends \erdiko\core\View
     {
         $html = "";
 
-        foreach($post->tags as $tag)
+        foreach($post->tags as $idx => $tag)
         {
-            $html .= "<a href=\"/tag/{$tag->slug}\">{$tag->name}</a> ";
+            $html .= "<a href=\"/tag/{$tag->slug}\">{$tag->name}</a>";
+            if($idx < (count($post->tags) - 1)) {
+                $html .= ", ";
+            }
         }
 
         return $html;
@@ -63,14 +70,6 @@ class View extends \erdiko\core\View
         // $post = preg_replace("/(\[.*\])/","",$body);
         // $post = preg_replace("/(\<img.*\>)/","",$post);
         return substr($post, 0, $length);
-    }
-
-    /**
-     *
-     */
-    public function getPostThumbnail($postId)
-    {
-        return \wp_get_attachment_url( \get_post_thumbnail_id($postId) );
     }
 
     /**
