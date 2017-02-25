@@ -3,10 +3,9 @@
  * View
  * Convenient functions for manipulating WordPress data in erdiko views
  *
- * @category   Erdiko
- * @package    WordPress
- * @copyright  Copyright (c) 2017, Arroyo Labs, http://www.arroyolabs.com
- * @author     John Arroyo
+ * @package    erdiko/wordpress
+ * @copyright  Copyright (c) 2017 Arroyo Labs, Inc. http://www.arroyolabs.com
+ * @author     John Arroyo <john@arroyolabs.com>
  */
 namespace erdiko\wordpress;
 require_once __DIR__."/bootstrap.php";

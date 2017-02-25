@@ -2,7 +2,7 @@
 <article>
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" id="post-body">
+            <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1" id="post-body">
               <?php              
               if(isset($data->post_content))
                 echo $data->post_content;
@@ -17,7 +17,7 @@
     <div class="container">
         <!-- Tag and category links -->
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" id="taxonomy-links">
+            <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1" id="taxonomy-links">
                 <?php if(!empty($data->tags)): ?>
                     <p>Tags: <?php echo $this->getTagLinks($data) ?></p>
                 <?php endif ?>
@@ -28,7 +28,7 @@
         </div>
         <!-- Embed comments -->
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
                 <div id="disqus_thread"></div>
             </div>
         </div>

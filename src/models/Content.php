@@ -6,10 +6,9 @@
  * IMPORTANT this model requires the erdiko/erdiko-core package
  * You can install it using, composer require erdiko/erdiko-core
  *
- * @category  	erdiko
- * @package   	wordpress
- * @copyright 	Copyright (c) 2017, Arroyo Labs, http://www.arroyolabs.com
- * @author		  John Arroyo, john@arroyolabs.com
+ * @package   	erdiko/wordpress/models
+ * @copyright 	Copyright (c) 2017 Arroyo Labs, Inc. http://www.arroyolabs.com
+ * @author      John Arroyo <john@arroyolabs.com>
  * @author      Fangxiang Wang
  */
 namespace erdiko\wordpress\models;
@@ -18,13 +17,7 @@ use \erdiko\core\Helper as Erdiko;
 
 class Content extends \erdiko\wordpress\Model
 {
-    /**
-     * get path for views
-     */
-    public function getViewPath()
-    {
-        return dirname(__DIR__);
-    }
+    use \erdiko\wordpress\traits\ImageTrait;
 
     /**
      * Get posts list
@@ -97,11 +90,6 @@ class Content extends \erdiko\wordpress\Model
     {
         $tags = \get_the_tags($postId);
         return empty($tags) ? array() : $tags;
-    }
-
-    public function getFeaturedImage($postId)
-    {
-        return \wp_get_attachment_url( get_post_thumbnail_id($postId) );
     }
 
     public function getCustomFields($postId)
@@ -189,10 +177,14 @@ class Content extends \erdiko\wordpress\Model
 
         // Article Tags
         $tags = array();
-        foreach($post->tags as $tag)
-            $tags[] = $tag->name; // $tag->slug
-        if (count($tags) > 0)
-            $meta['article:tag'] = $tags;
+	    if(!empty($post->tags)) {
+		    foreach ( $post->tags as $tag ) {
+			    $tags[] = $tag->name;
+		    } // $tag->slug
+		    if ( count( $tags ) > 0 ) {
+			    $meta['article:tag'] = $tags;
+		    }
+	    }
 
         // Twitter Card
         $meta['twitter:card'] = "summary_large_image";
@@ -225,11 +217,6 @@ class Content extends \erdiko\wordpress\Model
       return $shortProfile;
     }
 
-    public function getPostThumbnail($id)
-    {
-        return \wp_get_attachment_url( \get_post_thumbnail_id($id) );
-    }
-
     /**
      * Get post directly from the db (via SQL)
      */
@@ -240,13 +227,6 @@ class Content extends \erdiko\wordpress\Model
         $data = $wpdb->get_results($sql);
 
         return $data[0];
-    }
-
-    public function themeFeaturedImage($image)
-    {
-      $newTag = Erdiko::getView('header_image', array('image_url' => $image), $this->getViewPath());
-
-      return $newTag;
     }
 
     /**
@@ -435,29 +415,6 @@ class Content extends \erdiko\wordpress\Model
             $ct++;
         }
         $newTag = Erdiko::getView('gallery_carousel', array('image_items' => $imgItem, 'image_indicators' => $imgIndicators), $this->getViewPath());
-        return $newTag;
-    }
-
-    /**
-     * Parse and theme wordpress image caption
-     *
-     * @param post content
-     * @param index
-     * @todo clean up: why are we sending all the matches?
-     */
-    public function themeImage($matches, $i)
-    {
-        // Strip out image and caption
-        $original = $matches[5][$i];
-        preg_match_all('/(\<img.*?\/\>)/s', $matches[5][$i], $imgURL);
-        preg_match_all('/(?!.*\>)(.*)/s', $matches[5][$i], $caption);
-
-        // echo "<pre>original({$i}): ".print_r($matches[5][$i], true)."</pre>";
-        // echo "<pre>parsed({$i}): ".print_r($imgURL, true)."</pre>";
-        // echo "<pre>caption({$i}): ".print_r($caption, true)."</pre>";
-
-        $newTag = Erdiko::getView('image_w_caption', array('url' => $imgURL[0][0],
-            'caption' => $caption[0][0]), $this->getViewPath());
         return $newTag;
     }
 

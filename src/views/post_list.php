@@ -1,12 +1,19 @@
 <?php echo $this->getView('default_header', $data) ?>
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
                 <?php foreach($data->collection as $key => $post): ?>
                 <div class="post-list-item">
-                    <h3><a href="<?php echo $this->getHeadlessPermalink($post->ID) ?>"><?php echo $post->post_title ?></a></h3>
+                    <?php $newUrl = $this->getHeadlessPermalink($post->ID) ?>
+                    <?php 
+                        $featImg = $this->getFeaturedImage($post->ID);
+
+                        if(!empty($featImg))
+                            echo "<div class=\"teaser-feat-img\"><a href=\"{$newUrl}\"><img src=\"{$featImg}\"></a><h3>{$post->post_title}</h3></div>";
+                    ?>
                     <p class="post-teaser">
-                        <?php 
+                        <?php
+
                         if(empty($post->post_excerpt))
                             echo $this->getBodyExcerpt($post->post_content);
                         else
