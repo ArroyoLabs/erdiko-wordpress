@@ -9,7 +9,7 @@
                         $featImg = $this->getFeaturedImage($post->ID);
 
                         if(!empty($featImg))
-                            echo "<div class=\"teaser-feat-img\"><a href=\"{$newUrl}\"><img src=\"{$featImg}\"></a><h3>{$post->post_title}</h3></div>";
+                            echo "<div class=\"teaser-feat-img\"><a href=\"{$newUrl}\"><img src=\"{$featImg}\"><h3>{$post->post_title}</h3></a></div>";
                     ?>
                     <p class="post-teaser">
                         <?php
