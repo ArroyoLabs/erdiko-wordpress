@@ -2,8 +2,14 @@
 
 // Useful vars for configuring in your environment
 /*-------------------------------------------------------------------------------------------------*/
-var publicSiteRoot = "../../../public/default/";
-var themeName = "clean-blog";
+var renderedThemeRoot  = "../../../public/default/";
+var parentThemeRoot  = "../../../themes/clean-blog/";
+var themeName       = "clean-blog";
+var renderedTheme   = renderedThemeRoot+'themes/'+themeName;
+
+var jQueryJs        = "node_modules/jquery/dist/jquery.js";
+var bootstrapJs     = "node_modules/bootstrap-sass/assets/javascripts/bootstrap.js";
+var cleanBlogJs     = parentThemeRoot+"scripts/clean-blog.js";
 
 
 // Boilerplate & Setup
@@ -42,12 +48,13 @@ gulp.task('clean:stage', function(callback) {
 gulp.task('build', function(callback) {
    $.runSequence(
       'clean:stage',
-      ['styles', 'scripts'],
+      ['styles', 'bootstrap-scripts', 'jquery-scripts', 'clean_blog-scripts', 'scripts'],
       ['minify-css', 'minify-js'],
       'notify:buildComplete',
       callback
    );
 });
+
 
 // Subtasks
 /*-------------------------------------------------------------------------------------------------*/
@@ -96,6 +103,27 @@ gulp.task('scripts', function(callback) {
       .pipe(gulp.dest('stage/scripts'), callback);
 });
 
+// Bootstrap Javascript
+gulp.task('bootstrap-scripts', function(callback) {
+   return gulp.src(bootstrapJs)
+      // copy scripts to stage
+      .pipe(gulp.dest('stage/scripts/vendor'), callback);
+});
+
+// jQuery Javascript
+gulp.task('jquery-scripts', function(callback) {
+   return gulp.src(jQueryJs)
+      // copy scripts to stage
+      .pipe(gulp.dest('stage/scripts/vendor'), callback);
+});
+
+// Clean Blog Javascript
+gulp.task('clean_blog-scripts', function(callback) {
+   return gulp.src(cleanBlogJs)
+      // copy scripts to stage
+      .pipe(gulp.dest('stage/scripts/vendor'), callback);
+});
+
 // Minify CSS and put it in the public dir
 gulp.task('minify-css', function() {
   return gulp.src('stage/styles/**/*.css')
@@ -107,7 +135,7 @@ gulp.task('minify-css', function() {
         suffix: '.min',
         extname: '.css'
      }))
-    .pipe(gulp.dest(publicSiteRoot+'themes/'+themeName+'/css'));
+    .pipe(gulp.dest(renderedTheme+'/css'));
 });
 
 // minify JS and put in the public dir
@@ -115,12 +143,13 @@ gulp.task('minify-js', function () {
 
    return gulp.src(['stage/scripts/**/*.js'])
       .pipe($.order([
-        "vendor/jquery.js",
-        "vendor/bootstrap.js",
+        jQueryJs,
+        bootstrapJs,
+        cleanBlogJs,
         "vendor/*.js",
         "**/*.js"
       ]))
       .pipe($.concat('scripts.min.js'))
       .pipe($.uglify())
-      .pipe(gulp.dest(publicSiteRoot+'themes/'+themeName+'/js'));
+      .pipe(gulp.dest(renderedTheme+'/js'));
 });
