@@ -13,17 +13,12 @@
     "css": [
         {
             "name": "default",
-            "file": "/themes/clean-blog/css/bootstrap.css",
-            "active": 1
-        },
-        {
-            "name": "clean-blog",
-            "file": "/themes/clean-blog/css/clean-blog.css",
+            "file": "/themes/clean-blog/css/main.min.css",
             "active": 1
         },
         {
             "name": "custom-font-1",
-            "file": "http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css",
+            "file": "//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css",
             "active": 1
         },
         {
@@ -38,20 +33,10 @@
         }
     ],
     "js": {
-        "jquery": {
-            "file": "http://code.jquery.com/jquery-2.2.1.js",
+        "default": {
+            "file": "/themes/clean-blog/js/scripts.min.js",
             "active": 1,
             "order": 1
-        },
-        "bootstrap": {
-            "file": "/themes/clean-blog/js/bootstrap.js",
-            "active": 1,
-            "order": 2
-        },
-        "default": {
-            "file": "/themes/clean-blog/js/clean-blog.js",
-            "active": 1,
-            "order": 3
         }
     },
     "templates": {
