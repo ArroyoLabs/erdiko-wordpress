@@ -18,16 +18,11 @@
         },
         {
             "name": "custom-font-1",
-            "file": "//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css",
-            "active": 1
-        },
-        {
-            "name": "custom-font-2",
             "file": "http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic",
             "active": 1
         },
         {
-            "name": "custom-font-3",
+            "name": "custom-font-2",
             "file": "http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800",
             "active": 1
         }

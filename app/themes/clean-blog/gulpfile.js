@@ -2,8 +2,11 @@
 
 // Useful vars for configuring in your environment
 /*-------------------------------------------------------------------------------------------------*/
+
+// var parentThemeRoot  = "../../../themes/clean-blog/"; // for themes copied into themes folder
+var parentThemeRoot  = "../../../vendor/erdiko/wordpress/themes/clean-blog/"; // for themes updated with composer
 var renderedThemeRoot  = "../../../public/default/";
-var parentThemeRoot  = "../../../themes/clean-blog/";
+
 var themeName       = "clean-blog";
 var renderedTheme   = renderedThemeRoot+'themes/'+themeName;
 
@@ -143,9 +146,9 @@ gulp.task('minify-js', function () {
 
    return gulp.src(['stage/scripts/**/*.js'])
       .pipe($.order([
-        jQueryJs,
-        bootstrapJs,
-        cleanBlogJs,
+        "vendor/jquery.js",
+        "vendor/bootstrap.js",
+        "vendor/clean-blog.js",
         "vendor/*.js",
         "**/*.js"
       ]))

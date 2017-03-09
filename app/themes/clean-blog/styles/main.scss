@@ -9,14 +9,14 @@
 // First decide where you want to include your file
 
 // To include from vendor folder
-// @import "../../../../vendor/erdiko/wordpress/themes/clean-blog/styles/main";
+@import "../../../../vendor/erdiko/wordpress/themes/clean-blog/styles/main";
 
 // To include from themes folder
-@import "../../../../themes/clean-blog/styles/main";
+// @import "../../../../themes/clean-blog/styles/main";
 
 
 // User includes
 /*--------------------------------------------------------------------------*/
-// @import "variables";
+@import "variables";
 @import "styles";
 @import "mixins";
