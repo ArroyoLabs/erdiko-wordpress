@@ -81,4 +81,39 @@ class View extends \erdiko\core\View
         $url = get_permalink($postId);
         return str_replace( home_url(), "", $url ); // strip domain (since it's headless)
     }
+
+    /**
+     * Remove domain from the given URL
+     * @param string $url
+     * @return string $url relative 
+     */
+    public function stripDomain($url)
+    {
+        $matches = null;
+        $regex = "/\/\/.*?(\/.*)/";
+        preg_match($regex, $url, $matches);
+
+        return (isset($matches[1]) ? $matches[1] : null); 
+    }
+
+    /**
+     * Replace domain in the url
+     * If no domain specified the current domain is used (HTTP_HOST)
+     * @param string $url
+     * @param string $domain default to current site
+     * @return string $url 
+     */
+    public function replaceDomain($url, $domain = null)
+    {
+        $url = $this->stripDomain($url);
+
+        if($domain) {
+            $url = $domain.$url;
+        } else {
+            $http = ($_SERVER['HTTPS']) ? 'https://' : 'http://';
+            $url = $http.$_SERVER['HTTP_HOST'].$url;
+        }
+        
+        return $url;
+    }
 }
