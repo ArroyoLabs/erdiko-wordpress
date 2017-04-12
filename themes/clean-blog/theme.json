@@ -6,7 +6,7 @@
     "view": "page.html",
     "styles": {
         "default": {
-            "uri": "/themes/bootstrap/css/main.min.css",
+            "uri": "/themes/clean-blog/css/main.min.css",
             "active": 1,
             "order": 1
         },
@@ -18,10 +18,11 @@
     },
     "scripts": {
         "default": {
-            "uri": "/themes/bootstrap/js/scripts.min.js",
+            "uri": "/themes/clean-blog/js/scripts.min.js",
             "active": 1,
             "order": 1
         }
     },
-    "feat_image": "/themes/clean-blog/img/home-bg.jpg"
+    "feat_image": "/themes/clean-blog/img/home-bg.jpg",
+    "blog_home": "/"
 }
