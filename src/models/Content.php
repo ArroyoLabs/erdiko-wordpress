@@ -450,7 +450,7 @@ class Content extends \erdiko\wordpress\Model
     * Get pagination data
     *
     */
-    public function getPaginationData($pagesize, $page, $category=null)
+    public function getPaginationData($pagesize=1, $page=0, $category=null)
     {
         // Get number of posts
         if($category == null) {

@@ -1,50 +1,43 @@
 <?php
 /**
- * Posts Controller
+ * WordPress Posts Controller
  *
- * @category    erdiko
- * @package     wordpress
+ * @package     erdiko/wordpress/controllers
  * @copyright   Copyright (c) 2017, Arroyo Labs, www.arroyolabs.com
  * @author      John Arroyo, john@arroyolabs.com
  */
 namespace erdiko\wordpress\controllers;
 
 
-class Posts extends \erdiko\core\Controller
+class Posts extends \erdiko\Controller
 {
-    /**
-     * Get
-     *
-     * @param mixed $var
-     * @return mixed
-     */
-    public function get($var = null)
+    use \erdiko\theme\traits\Controller;
+
+    public function __invoke($request, $response, $args) 
     {
-        $config = \Erdiko::getConfig();
-        $model = new \erdiko\wordpress\models\Content;
-        
+        $this->container->logger->debug("/wordpress");
+        $theme = new \erdiko\theme\Engine;
+        $view = "blog/post/list.html";
+
+        $content = new \erdiko\wordpress\models\Content;
+
         // Get paging info
         $pagesize = empty($_REQUEST['pagesize']) ? 
-            $config['content']['defaults']['pagesize'] : $_REQUEST['pagesize'];
+            $theme->getThemeField('pagesize') : $_REQUEST['pagesize'];
         $page = empty($_REQUEST['page']) ? 1 : $_REQUEST['page'];
         $offset = $page*$pagesize;
-        $pagingData = $model->getPaginationData($pagesize, $page);
+        $pagingData = $content->getPaginationData($pagesize, $page);
+        // Get posts
+        $posts = $content->getAllPosts($pagesize, $pagingData['offset']);
 
-        $post = $model->getAllPosts($pagesize, $pagingData['offset']);
-        $data = (object)array(
-            'title' => $config['site']['full_name'],
-            'subtitle' => $config['site']['tagline'],
-            'collection' => $post,
-            'paging' => $pagingData,
-            'feat_image' => $config['content']['defaults']['feat_image'],
-            'url' => "/"
-            );
+        
+        $theme->title = "Blog Title"; // $config['site']['full_name']
+        $theme->subtitle = "Tagline"; // $config['site']['tagline']
+        $theme->posts = $posts;
+        $theme->paging = $pagingData;
+        // $theme->feat_image = $config['content']['defaults']['feat_image'];
+        $theme->url = explode('?', $_SERVER["REQUEST_URI"], 2)[0];
 
-        // Load a custom view
-        $view = new \erdiko\wordpress\View('post_list', $data, $model->getViewPath());
-
-        // Page Title
-        $this->setTitle($config['site']['full_name']);
-        $this->setContent($view);
+        return $this->render($response, $view, $theme);
     }
 }
