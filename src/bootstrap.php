@@ -15,13 +15,18 @@ define('WP_USE_THEMES', false);
 
 // if not set in the appstrap.php (or elsewhere) default it to lib/wordpress
 if(empty(WORDPRESS_ROOT))
-    define('WORDPRESS_ROOT', ERDIKO_ROOT.'/lib/wordpress');
+    define("WORDPRESS_ROOT", ERDIKO_ROOT.'/vendor/wordpress');
+
+define("WORDPRESS_ROOT", ERDIKO_ROOT.'/vendor/wordpress');
+
+error_log("ERDIKO_ROOT: ".ERDIKO_ROOT);
+error_log("WORDPRESS_ROOT: ".WORDPRESS_ROOT);
 
 if ( !isset($wp_did_header) ) {
 
 	$wp_did_header = true;
-
-	require_once( WORDPRESS_ROOT . '/wp-load.php' );
+    $bootstrap = WORDPRESS_ROOT . '/wp-load.php';
+	require_once( $bootstrap );
 
 	wp();
 
