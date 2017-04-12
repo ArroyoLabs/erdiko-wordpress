@@ -1,0 +1,27 @@
+{
+    "name": "clean-blog",
+    "description": "Simple Bootstrap 3 based blog theme",
+    "credits": "John Arroyo",
+    "public":"/public/themes/clean-blog",
+    "view": "page.html",
+    "styles": {
+        "default": {
+            "uri": "/themes/bootstrap/css/main.min.css",
+            "active": 1,
+            "order": 1
+        },
+        "custom-font": {
+            "uri": "http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic",
+            "active": 1,
+            "order": 1
+        }
+    },
+    "scripts": {
+        "default": {
+            "uri": "/themes/bootstrap/js/scripts.min.js",
+            "active": 1,
+            "order": 1
+        }
+    },
+    "feat_image": "/themes/clean-blog/img/home-bg.jpg"
+}
