@@ -1,0 +1,55 @@
+{% extends "page.html" %}
+
+{% block header %}
+  {{ include('blog/header.html') }}
+{% endblock %}
+
+{% block body %}
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
+        {% for post in page.posts %}
+          {{ include('blog/post/teaser.html') }}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  
+  <h3>Paging</h3>
+  <pre>{{ dump(page.paging) }}</pre>
+  
+  <h3>Theme</h3>
+  <pre>{{ dump(theme) }}</pre>
+
+  {% if page.paging.pages and page.paging.pages > 1 %}
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+          <nav>
+            <ul class="pagination pagination-lg">
+              {% if page.paging.previous %}
+                <li>
+                  <a href="{{ page.url }}?page={{ page.paging.previous }}" aria-label="Previous Page"><span aria-hidden="true">&#8592;&nbsp; Previous</span></a>
+                </li>
+              {% endif %}
+
+              {% for i in range(0, page.paging.pages) %}
+                {% if i == page.paging.page %}
+                  <li class="active"><span> {{ i }} <span class="sr-only">(current)</span></span></li>
+                {% else %}
+                  <li><a href="{{ page.url }}?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+              {% endfor %}
+
+              {% if page.paging.next %}
+                <li>
+                  <a href="{{ page.url }}?page={{ page.paging.next }}" aria-label="Next Page"><span aria-hidden="true">Next &nbsp;&#8594;</span></a>
+                </li>
+              {% endif %}
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}

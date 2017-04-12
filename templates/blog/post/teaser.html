@@ -1,0 +1,15 @@
+<div class="post-list-item">
+  {% set newUrl = 'foo' %}
+  {% set featImg = theme.feat_image %}
+  <div class="teaser-feat-img"><a href="{{ newUrl }}">
+    <img src="{{ featImg }}"><h3>{{ post.post_title }}</h3></a>
+  </div>
+  <p class="post-teaser">
+    {% if post.post_excerpt %}
+      {{ post.post_excerpt }}
+    {% else %}
+      {{ post.post_excerpt }}
+    {% endif %}
+  </p>
+  <div class="read-more"><a href="<?php echo $newUrl ?>">Read more...</a></div>
+</div>
