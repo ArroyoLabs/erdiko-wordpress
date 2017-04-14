@@ -1,43 +1,40 @@
 <?php
 /**
- * Content Controller
- * A simple way to get wordpress content into your site
- * @note this is a work in progress. 
- * It is however a good starting point for running headless
+ * WordPress Content Controller
  *
- * @category    erdiko
- * @package     wordpress
+ * @package     erdiko/wordpress/controllers
  * @copyright   Copyright (c) 2017, Arroyo Labs, www.arroyolabs.com
  * @author      John Arroyo, john@arroyolabs.com
  */
 namespace erdiko\wordpress\controllers;
 
 
-class Content extends \erdiko\core\Controller
+class Content extends \erdiko\Controller
 {
-    /**
-     * Get
-     *
-     * @param mixed $var
-     * @return mixed
-     */
-    public function get($args = null)
+    use \erdiko\theme\traits\Controller;
+
+    public function __invoke($request, $response, $args) 
     {
-        $model = new \erdiko\wordpress\models\Content;
-        $post = $model->getPost($args);
-        $renderedData = $model->themeData($post);
+        $this->container->logger->debug("/wordpress/".$args['post_url']);
+        $theme = new \erdiko\theme\Engine;
+        $view = "blog/post/detail.html";
 
-        // $content = $this->getView('post_detail', $renderedData, $model->getViewPath());
-        $view = new \erdiko\wordpress\View('post_detail', $renderedData, $model->getViewPath());
-        $this->setContent($view);
-
-        /** SEO **/
-        // Page Title
-        $this->setTitle($post->post_title);
+        $content = new \erdiko\wordpress\models\Content;
+        $post = $content->getPost($args['post_url']);
+        // $this->container->logger->debug("post: ".print_r($post, true));
         
-        // Get meta tags from the post
-        $meta = $model->getMeta($post);
-        $this->setMeta($meta);
+        $theme->title = $post->post_title;
+        $theme->post = $content->themeData($post);
+        $theme->url = $args['post_url'];
+        $theme->categories = $content->getCategoryLinks($post);
+        $theme->tags = $content->getTagLinks($post);
+
+        // Add post metadata
+        $theme->addMeta($content->getMeta($post));
+
+        // $theme->feat_image = $config['content']['defaults']['feat_image'];
+
+        return $this->render($response, $view, $theme);
     }
 
     // http://kenwheeler.github.io/slick, http://videojs.com, https://open.521dimensions.com/amplitudejs

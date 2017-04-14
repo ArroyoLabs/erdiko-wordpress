@@ -194,8 +194,9 @@ class Content extends \erdiko\wordpress\Model
         // $meta['twitter:creator'] = "@erdiko";
 
         // Override any default meta values (from post) with $additional meta supplied
-        $meta = array_merge($meta, $additional);
-
+        if(!empty($additional))
+            $meta = array_merge($meta, $additional);
+        
         return $meta;
     }
 
@@ -271,6 +272,46 @@ class Content extends \erdiko\wordpress\Model
         $data = $wpdb->get_results($sql);
         $newData = $this->themeData($data);
         return $newData;
+    }
+
+    /**
+     * Get rendered category links
+     *
+     * @param string $html
+     */
+    public function getCategoryLinks($post)
+    {
+        $html = "";
+
+        foreach($post->categories as $idx => $category)
+        {
+            $html .= "<a href=\"/category/{$category->slug}\">{$category->name}</a>";
+            if($idx < (count($post->categories) - 1)) {
+                $html .= ", ";
+            }
+        }
+
+        return $html;
+    }
+
+    /**
+     * Get rendered tag links
+     * 
+     * @param string $html
+     */
+    public function getTagLinks($post)
+    {
+        $html = "";
+
+        foreach($post->tags as $idx => $tag)
+        {
+            $html .= "<a href=\"/tag/{$tag->slug}\">{$tag->name}</a>";
+            if($idx < (count($post->tags) - 1)) {
+                $html .= ", ";
+            }
+        }
+
+        return $html;
     }
 
     /**
