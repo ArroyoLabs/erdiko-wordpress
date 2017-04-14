@@ -17,10 +17,15 @@
         }
     },
     "scripts": {
+        "jquery": {
+            "uri": "http://code.jquery.com/jquery-2.2.1.js",
+            "active": 1,
+            "order": 1
+        },
         "default": {
             "uri": "/themes/clean-blog/js/scripts.min.js",
             "active": 1,
-            "order": 1
+            "order": 2
         }
     },
     "feat_image": "/themes/clean-blog/img/home-bg.jpg",
