@@ -1,31 +1,37 @@
-<?php echo $this->getView('post_header', $data) ?>
-<article>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1" id="post-body">
-              <?php              
-              if(isset($data->post_content))
-                echo $data->post_content;
-              ?>
-            </div>
-        </div>
-    </div>
-</article>
+{% extends "page.html" %}
 
-<?php if($data->post_type == 'post'): ?>
-    
+{% block header %}
+  {{ include('blog/post/header.html') }}
+{% endblock %}
+
+{% block body %}
+  <article>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1" id="post-body">
+          {{ page.post.post_content | raw }}
+        </div>
+      </div>
+    </div>
+  </article>
+
+  {% if(page.post.post_type == 'post') %}
     <div class="container">
         <!-- Tag and category links -->
         <div class="row">
             <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1" id="taxonomy-links">
-                <?php if(!empty($data->tags)): ?>
-                    <p>Tags: <?php echo $this->getTagLinks($data) ?></p>
-                <?php endif ?>
-                <?php if(!empty($data->categories)): ?>
-                    <p>Category: <?php echo $this->getCategoryLinks($data) ?></p>
-                <?php endif ?>
+                {% if page.tags %}
+                  <p>Tags: {{ page.tags | raw }}</p>
+                {% endif %}
+                {% if page.categories %}
+                  <p>Category: {{ page.categories | raw }}</p>
+                {% endif %}
             </div>
         </div>
     </div>
-    
-<?php endif; ?>
+  {% endif %}
+
+  <h3>Post</h3>
+  <pre>{{ dump(page.post) }}</pre>
+
+{% endblock %}

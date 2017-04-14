@@ -1,11 +1,11 @@
-<header class="intro-header" style="background-image: url('{{ theme.feat_image }}')">
+<header class="intro-header" style="background-image: url('{{ page.post.feat_image }}')">
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
         <div class="post-heading">
-          <h1>{{ post.title }}</h1>
-          {% if(post.post_type == 'post') %}
-            <span class="meta">Posted by <a href="{{ post.author.profile_url }}">{{ post.author.display_name }}</a> on {{ post.post_date|date("n/j/Y") }}</span>
+          <h1>{{ page.post.post_title }}</h1>
+          {% if(page.post.post_type == 'post') %}
+            <span class="meta">Posted by <a href="{{ page.post.author.profile_url }}">{{ page.post.author.display_name }}</a> on {{ page.post.post_date|date("n/j/Y") }}</span>
           {% endif %}
         </div>
       </div>

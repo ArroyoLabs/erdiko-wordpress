@@ -8,8 +8,13 @@
 </head>
 <body>
   <div id="wrap">
-    {% block header %}
+    
+    {% block menu %}
       {{ include('page/header.html') }}
+    {% endblock %}
+
+    {% block header %}
+      {{ include('blog/header.html') }}
     {% endblock %}
 
     <div id="header-push"></div>
