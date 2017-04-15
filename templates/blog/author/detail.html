@@ -1,0 +1,27 @@
+{% extends "page.html" %}
+
+{% block header %}
+  {{ include('blog/header.html') }}
+{% endblock %}
+
+{% block body %}
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="well well-lg">
+          <div class="media">
+            <div class="media-left">
+              <img class="media-object" src="{{ page.author.gravitar }}" alt="{{ page.author.user.display_name }}">
+            </div>
+            <div class="media-body">
+              <h4 class="media-heading">{{ page.author.meta.first_name.0 }} {{ page.author.meta.last_name.0 }}</h4>
+              <p>{{ page.author.meta.description.0 }}
+              <br /><a href="{{ page.author.user.user_url }}" target="_blank">{{ page.author.user.user_url }}</a></p>
+            </div>
+          </div>
+        </div>
+        <pre>{{ dump(page) }}</pre>
+      </div>
+    </div>
+  </div>
+{% endblock %}

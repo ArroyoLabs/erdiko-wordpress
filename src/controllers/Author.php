@@ -2,38 +2,34 @@
 /**
  * Author Controller
  *
- * @category    erdiko
- * @package     wordpress
+ * @package     erdiko/wordpress/controllers
  * @copyright   Copyright (c) 2017, Arroyo Labs, www.arroyolabs.com
  * @author      John Arroyo, john@arroyolabs.com
  */
 namespace erdiko\wordpress\controllers;
 
 
-class Author extends \erdiko\core\Controller
+class Author extends \erdiko\Controller
 {
-    /**
-     * Get
-     *
-     * @param mixed $var
-     * @return mixed
-     */
-    public function get($var = null)
+    use \erdiko\theme\traits\Controller;
+
+    public function __invoke($request, $response, $args) 
     {
-        $model = new \erdiko\wordpress\models\Author;
-        $author = $model->getAuthor($var);
-        $content = $this->getView('author', $author, $model->getViewPath());
+        // $this->container->logger->debug("/wordpress/".$args['author']);
+        $view = "blog/author/detail.html";
+        $author = new \erdiko\wordpress\models\Author;
 
-        // echo "<pre>".print_r($author, true)."</pre>";
+        $theme = new \erdiko\theme\Engine;
+        $theme->author = $author->getAuthor($args['author']);
+        $theme->title = "{$theme->author->user->display_name}'s Profile";
 
-        /** SEO **/
-        // Title
-        $this->setTitle("{$author->user->display_name}'s profile");
-        // Page description
-        $this->addMeta('description', "Profile for {$author->user->display_name}");
-        // Author
-        $this->addMeta('author', $author->user->display_name);
+        // Add author metadata
+        $meta = [
+            "description" => "Profile for {$theme->author->user->display_name}", 
+            "author" => $author->user->display_name
+            ];
+        $theme->addMeta($meta);
 
-        $this->setContent($content);
+        return $this->render($response, $view, $theme);
     }
 }
