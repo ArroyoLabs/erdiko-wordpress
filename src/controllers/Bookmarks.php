@@ -1,41 +1,43 @@
 <?php
 /**
- * Content Controller
- * A simple way to get wordpress content into your site
- * @note this is a work in progress.  It is however a good starting point for running headless
+ * Bookmarks Controller
+ * https://codex.wordpress.org/Function_Reference/get_bookmarks
  *
- * @category    erdiko
- * @package     wordpress
+ * @package     erdiko/wordpress/controllers
  * @copyright   Copyright (c) 2017, Arroyo Labs, www.arroyolabs.com
  * @author      John Arroyo, john@arroyolabs.com
  */
 namespace erdiko\wordpress\controllers;
 
 
-class Bookmarks extends \erdiko\core\Controller
+class Bookmarks extends \erdiko\Controller
 {
-    /**
-     * Get
-     *
-     * @param mixed $var
-     * @return mixed
-     */
-    public function get($args = null)
+    use \erdiko\theme\traits\Controller;
+
+    public function __invoke($request, $response, $args) 
     {
+        $view = "blog/bookmarks.html";
         $model = new \erdiko\wordpress\models\Bookmarks;
-        // $bookmarks = $model->getBookmarks();
-        $category = 'press'; // Change this to the category you wish to view
-        $bookmarks = $model->getBookmarksByCategory($category);
 
-        $data = (object) array(
-          'title' => ucfirst($category),
-          'collection' => $bookmarks
-          );
-        $view = new \erdiko\wordpress\View('bookmarks', $data, $model->getViewPath());
-        $this->addView($view);
+        if(isset($args['category'])) {
+            $category = $args['category'];
+            $bookmarks = $model->getBookmarksByCategory($category);
 
-        /** SEO **/
-        $this->setTitle("Links");
-        $this->addMeta('description', "A collection of our links");
+        } else {
+            $category = "Bookmarks";
+            $bookmarks = $model->getBookmarksByCategory("");
+        }
+
+        $theme = new \erdiko\theme\Engine;
+        $theme->title = ucfirst($category);
+        $theme->bookmarks = $bookmarks;
+
+        // Add SEO tags
+        $meta = [
+            "description" => $theme->title
+            ];
+        $theme->addMeta($meta);
+
+        return $this->render($response, $view, $theme);
     }
 }

@@ -1,43 +1,34 @@
 <?php
 /**
  * Bookmarks Model
+ * https://developer.wordpress.org/reference/functions/get_bookmarks/
  * 
- * @package   	erdiko/wordpress/models
- * @copyright 	Copyright (c) 2017 Arroyo Labs, Inc. http://www.arroyolabs.com
- * @author		  John Arroyo <john@arroyolabs.com>
+ * @package     erdiko/wordpress/models
+ * @copyright   Copyright (c) 2017 Arroyo Labs, Inc. http://www.arroyolabs.com
+ * @author	    John Arroyo <john@arroyolabs.com>
  */
 namespace erdiko\wordpress\models;
 
-use \erdiko\core\Helper as Erdiko;
 
 class Bookmarks extends \erdiko\wordpress\Model
 {
     /**
-     * get path for views
-     */
-    public function getViewPath()
-    {
-        return dirname(__DIR__);
-    }
-
-    /**
      * Get bookmarks
      * Wrapper for get_bookmarks
      * https://developer.wordpress.org/reference/functions/get_bookmarks/
+     *
+     * @return array $bookmarks
      */
-    public function getBookmarks($args = null)
+    public function getBookmarks($args = array())
     {
-        if($args == null) {
-            $args = array();
-        }
-
-        $bookmarks = \get_bookmarks( $args );
-        return $bookmarks;
+        return \get_bookmarks( $args );
     }
 
     /**
      * Get bookmarks by category
      * Convenience function to get bookmarks by category
+     *
+     * @return array $bookmarks
      */
     public function getBookmarksByCategory($category, $limit = -1, $orderBy = 'name', $order = 'DESC')
     {
@@ -45,11 +36,9 @@ class Bookmarks extends \erdiko\wordpress\Model
             'orderby'           => $orderBy,
             'order'             => $order,
             'limit'             => $limit,
-            'category_name'     => $category,
-            'hide_invisible'    => 1
+            'category_name'     => $category
             );
 
-        $bookmarks = \get_bookmarks( $args );
-        return $bookmarks;
+        return $this->getBookmarks($args);
     }
 }
