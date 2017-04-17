@@ -15,12 +15,15 @@ class Content extends \erdiko\Controller
 
     public function __invoke($request, $response, $args) 
     {
-        $this->container->logger->debug("/wordpress/".$args['post_url']);
+        $postUrl = isset($args['post_url']) ? $args['post_url'] : implode('/', $args);
+
+        $this->container->logger->debug("/wordpress/".$postUrl);
+
         $theme = new \erdiko\theme\Engine;
         $view = "blog/post/detail.html";
 
         $content = new \erdiko\wordpress\models\Content;
-        $post = $content->getPost($args['post_url']);
+        $post = $content->getPost($postUrl);
         // $this->container->logger->debug("post: ".print_r($post, true));
         
         $theme->title = $post->post_title;
