@@ -2,48 +2,51 @@
 /**
  * Category Controller
  * 
- * @category    erdiko
- * @package     wordpress
+ * @package     erdiko/wordpress/controllers
  * @copyright   Copyright (c) 2017, Arroyo Labs, www.arroyolabs.com
  * @author      John Arroyo, john@arroyolabs.com
  */
 namespace erdiko\wordpress\controllers;
 
 
-class Category extends \erdiko\core\Controller
+class Category extends \erdiko\Controller
 {
-    /**
-     * Get
-     *
-     * @param mixed $var
-     * @return mixed
-     */
-    public function get($var = null)
+    use \erdiko\theme\traits\Controller;
+
+    public function __invoke($request, $response, $args) 
     {
-        $config = \Erdiko::getConfig();
-        $model = new \erdiko\wordpress\models\Content;
-        
+        if(empty($args['category']))
+            throw new \Exception("No Category Specified");
+
+        $category = $args['category'];
+
+        $theme = new \erdiko\theme\Engine;
+        $view = "blog/post/list.html";
+
+        $content = new \erdiko\wordpress\models\Content;
         // Get paging info
-        $pagesize = empty($_REQUEST['pagesize']) ? 
-            $config['content']['defaults']['pagesize'] : $_REQUEST['pagesize'];
-        $page = empty($_REQUEST['page']) ? 1 : $_REQUEST['page'];
-        $pagingData = $model->getPaginationData($pagesize, $page, $var);
+        $pager = $content->getPagination($theme->getThemeField('pagesize'), $category);
 
-        $posts = $model->getAllPosts($pagesize, $pagingData['offset'], $var); // Get posts
-        $data = (object)array(
-            'title' => ucfirst($var),
-            'collection' => $posts,
-            'paging' => $pagingData,
-            'feat_image' => $config['content']['defaults']['feat_image'],
-            'url' => "/category/{$var}"
-            );
+        // Get posts
+        $posts = $content->getAllPosts($pager['pagesize'], $pager['offset'], $category);
+        
+        $description = "Posts in category {$category}";
+        $theme->title = ucfirst($category);
+        $theme->subtitle = $description;
+        $theme->category = $category;
+        $theme->posts = $posts;
+        $theme->paging = $pager['pagination'];
+        // $theme->feat_image = $config['content']['defaults']['feat_image'];
+        $theme->url = explode('?', $_SERVER["REQUEST_URI"], 2)[0];
 
-        // Load a custom view
-        $view = new \erdiko\wordpress\View('post_list', $data, $model->getViewPath());
+        // Add additional SEO tags
+        // @todo get extended meta data for the page like, $theme->addMeta($content->getMeta($post));
+        $meta = [
+            "description" => $description,
+            "og:description" => $description
+            ];
+        $theme->addMeta($meta);
 
-        $this->setTitle("Category {$data->title}");
-        $this->addMeta('description', "Posts in category {$data->title}");
-
-        $this->setContent($view);
+        return $this->render($response, $view, $theme);
     }
 }
