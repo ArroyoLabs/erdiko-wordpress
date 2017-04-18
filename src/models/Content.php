@@ -488,10 +488,27 @@ class Content extends \erdiko\wordpress\Model
     }
 
     /**
-    * Get pagination data
-    *
-    */
-    public function getPaginationData($pagesize=1, $page=0, $category=null)
+     * Get pagination data
+     * @return array $pager
+     */
+    public function getPagination($defaultPagesize = 10, $category=null)
+    {
+        $pager = array();
+
+        $pager['pagesize'] = empty($_REQUEST['pagesize']) ? 
+            $defaultPagesize : $_REQUEST['pagesize'];
+        $pager['page'] = empty($_REQUEST['page']) ? 1 : $_REQUEST['page'];
+        $pager['offset'] = $pager['page'] * $pager['pagesize'] - $pager['pagesize'];
+        $pager['pagination'] = $this->getPaginationData($pager['pagesize'], $pager['page']);
+
+        return $pager;
+    }
+
+    /**
+     * Get pagination data
+     *
+     */
+    public function getPaginationData($pagesize=10, $page=1, $category=null)
     {
         // Get number of posts
         if($category == null) {
