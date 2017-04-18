@@ -2,35 +2,50 @@
 /**
  * Tag Controller
  *
- * @category    erdiko
- * @package     wordpress
+ * @package     erdiko/wordpress/controllers
  * @copyright   Copyright (c) 2017, Arroyo Labs, www.arroyolabs.com
  * @author      John Arroyo, john@arroyolabs.com
  */
 namespace erdiko\wordpress\controllers;
 
 
-class Tag extends \erdiko\core\Controller
+class Tag extends \erdiko\Controller
 {
-    /**
-     * Get
-     *
-     * @param mixed $var
-     * @return mixed
-     */
-    public function get($var = null)
+    use \erdiko\theme\traits\Controller;
+
+    public function __invoke($request, $response, $args) 
     {
-        $model = new \erdiko\wordpress\models\Content;
-        $posts = $model->getPostsByTag(10, 0, $var);
+        if(empty($args['tag']))
+            throw new \Exception("No tag specified"); // @todo throw 404 instead
 
-        $data = (object)array('title' => ucfirst($var), 'collection' => $posts);
+        $tag = $args['tag'];
+        $theme = new \erdiko\theme\Engine;
+        $view = "blog/post/list.html";
 
-        // Load a custom view
-        $view = new \erdiko\wordpress\View('post_list', $data, $model->getViewPath());
+        $content = new \erdiko\wordpress\models\Content;
+        // Get paging info
+        $pager = $content->getPagination($theme->getThemeField('pagesize'), $tag);
 
-        $this->setTitle("Tag {$data->title}");
-        $this->addMeta('description', "Posts with tag {$data->title}"); // Meta from the config
+        // Get posts
+        $posts = $content->getPostsByTag($pager['pagesize'], $pager['offset'], $tag);
+        
+        $description = "Posts with tag {$tag}";
+        $theme->title = ucfirst($tag);
+        $theme->subtitle = $description;
+        $theme->tag = $tag;
+        $theme->posts = $posts;
+        $theme->paging = $pager['pagination'];
+        // $theme->feat_image = $config['content']['defaults']['feat_image'];
+        $theme->url = explode('?', $_SERVER["REQUEST_URI"], 2)[0];
 
-        $this->setContent($view);
+        // Add additional SEO tags
+        // @todo get extended meta data for the page like, $theme->addMeta($content->getMeta($post));
+        $meta = [
+            "description" => $description,
+            "og:description" => $description
+            ];
+        $theme->addMeta($meta);
+
+        return $this->render($response, $view, $theme);
     }
 }
