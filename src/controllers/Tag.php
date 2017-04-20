@@ -24,8 +24,8 @@ class Tag extends \erdiko\Controller
 
         $content = new \erdiko\wordpress\models\Content;
         // Get paging info
-        $pager = $content->getPagination($theme->getThemeField('pagesize'), $tag);
-
+        $pager = $content->getPager($theme->getThemeField('pagesize'),
+            $content->getTagCount($tag));
         // Get posts
         $posts = $content->getPostsByTag($pager['pagesize'], $pager['offset'], $tag);
         
@@ -34,7 +34,7 @@ class Tag extends \erdiko\Controller
         $theme->subtitle = $description;
         $theme->tag = $tag;
         $theme->posts = $posts;
-        $theme->paging = $pager['pagination'];
+        $theme->paging = $pager;
         // $theme->feat_image = $config['content']['defaults']['feat_image'];
         $theme->url = explode('?', $_SERVER["REQUEST_URI"], 2)[0];
 
