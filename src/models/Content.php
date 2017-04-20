@@ -126,6 +126,21 @@ class Content extends \erdiko\wordpress\Model
     }
 
     /**
+     * Get the featured image for a post
+     * @param int $postId
+     * @param boolean $useDefault if true return default image if none found
+     * @return string $imageUrl
+     */
+    public function getFeaturedImage($postId, $useDefault = true)
+    {
+        $featImg = \wp_get_attachment_url( \get_post_thumbnail_id($postId) );
+        if(empty($featImg) && $useDefault)
+            $featImg = $this->defaultFeatImg;
+
+        return $featImg;
+    }
+
+    /**
      * getMeta
      * Get SEO meta tags for the html page header
      * @param $post
