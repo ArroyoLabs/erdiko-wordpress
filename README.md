@@ -82,9 +82,9 @@ Feel free to adjust accordingly.
 
 **3. Copy the default theme**
 
-We even included a sample theme that is bootstrap based. Copy the files from your vendor folder vendor/erdiko/wordpress/app/themes/ and vendor/erdiko/wordpress/public/themes/ into your app/themes/ and public/themes folder respectively.
+We even included a sample theme that is bootstrap based. Copy the files from your vendor folder vendor/erdiko/wordpress/app/themes/ and vendor/erdiko/wordpress/public/default/themes/ into your app/themes/ and public/default/themes folder respectively.
 
-Theme is based on a [Start Bootstrap](https://startbootstrap.com/template-overviews/clean-blog/) theme.
+Theme is based on css from the [Start Bootstrap](https://startbootstrap.com/template-overviews/clean-blog/) theme.
 
 **4. Add a symlink for the uploaded files (optional)**
 
