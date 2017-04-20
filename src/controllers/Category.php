@@ -25,13 +25,10 @@ class Category extends \erdiko\Controller
         $content = new \erdiko\wordpress\models\Content;
 
         // Get paging info
-        $pagerData = $content->getPagerData($theme->getThemeField('pagesize'));
+        $pager = $content->getPager($theme->getThemeField('pagesize'),
+            $content->getCategoryCount($category));
         // Get posts
-        $posts = $content->getAllPosts($pagerData['pagesize'], $pagerData['offset'], $category);
-        $count = $content->getCategoryCount($category);
-        $pager = $content->getPager($pagerData, $count);
-
-        $this->container->logger->debug("post ct: {$count}");
+        $posts = $content->getAllPosts($pager['pagesize'], $pager['offset'], $category);
         
         $description = "Posts in category {$category}";
         $theme->title = ucfirst($category);

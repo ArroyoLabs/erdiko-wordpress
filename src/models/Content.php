@@ -506,10 +506,12 @@ class Content extends \erdiko\wordpress\Model
     /**
      * Get pager
      */
-    public function getPager(array $pagerData, int $postCount)
+    public function getPager(int $defaultPagesize = 10, int $count = 0)
     {
+        $pagerData = $this->getPagerData($defaultPagesize);
+
         // Get number of pages
-        $pages = ceil($postCount / $pagerData['pagesize']);
+        $pages = ceil($count / $pagerData['pagesize']);
 
         // Get previous and next
         $previous  = (($pagerData['page'] - 1) < 1) ? null : $pagerData['page'] - 1;
@@ -521,7 +523,7 @@ class Content extends \erdiko\wordpress\Model
             'pages' => $pages,
             'previous' => $previous,
             'next' => $next,
-            'post_count' => $postCount,
+            'count' => $count,
             'offset' => $pagerData['offset']
             );
     }
