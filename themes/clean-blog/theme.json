@@ -28,6 +28,7 @@
             "order": 2
         }
     },
-    "feat_image": "/themes/clean-blog/img/home-bg.jpg",
+    "feat_image": "/themes/clean-blog/img/post-bg.jpg",
+    "header_image": "/themes/clean-blog/img/home-bg.jpg",
     "blog_home": "/"
 }
