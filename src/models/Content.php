@@ -497,8 +497,7 @@ class Content extends \erdiko\wordpress\Model
         $pager['pagesize'] = empty($_REQUEST['pagesize']) 
             ? $defaultPagesize : $_REQUEST['pagesize'];
         $pager['page'] = empty($_REQUEST['page']) ? 1 : $_REQUEST['page'];
-        //$pager['offset'] = $pager['page'] * $pager['pagesize'] - $pager['pagesize'];
-        $pager['offset'] = 0;
+        $pager['offset'] = $pager['page'] * $pager['pagesize'] - $pager['pagesize'];
 
         return $pager;
     }
@@ -545,6 +544,12 @@ class Content extends \erdiko\wordpress\Model
         return $pager;
     }
 
+    public function getPostCount()
+    {
+        $countPosts = \wp_count_posts();
+        return $countPosts->publish;
+    }
+
     public function getCategoryCount($category)
     {
         $term = \get_term_by('slug', $category, 'category');
@@ -555,36 +560,5 @@ class Content extends \erdiko\wordpress\Model
     {
         $term = \get_term_by('slug', $tag, 'post_tag');
         return $term->count;
-    }
-
-    /**
-     * Get pagination data
-     *
-     */
-    public function getPaginationData($pagesize=10, $page=1, $category=null)
-    {
-        // Get number of posts
-        if($category == null) {
-            $countPosts = \wp_count_posts();
-            $count = $countPosts->publish;
-        } else {
-            $postsInCat = \get_term_by('slug', $category, 'category');
-            $count = $postsInCat->count;
-        }
-        $pages = ceil($count / $pagesize);
-
-        // Get previous and next
-        $previous  = (($page - 1) < 1) ? null : $page - 1;
-        $next = ($page == $pages) ? null : $page + 1;
-
-        return array(
-            'pagesize' => $pagesize,
-            'page' => $page,
-            'pages' => $pages,
-            'previous' => $previous,
-            'next' => $next,
-            'post_count' => $count,
-            'offset' => ($page-1)*$pagesize
-            );
     }
 }

@@ -22,15 +22,15 @@ class Posts extends \erdiko\Controller
         $content = new \erdiko\wordpress\models\Content;
 
         // Get paging info
-        $pager = $content->getPagination($theme->getThemeField('pagesize'));
-
+        $pager = $content->getPager($theme->getThemeField('pagesize'),
+            $content->getPostCount($category));
         // Get posts
         $posts = $content->getAllPosts($pager['pagesize'], $pager['offset']);
         
-        $theme->title = $theme->getApplicationField('name'); // $config['site']['full_name']
-        $theme->subtitle = $theme->getApplicationField('tagline'); // $config['site']['tagline']
+        $theme->title = $theme->getApplicationField('name');
+        $theme->subtitle = $theme->getApplicationField('tagline');
         $theme->posts = $posts;
-        $theme->paging = $pager['pagination'];
+        $theme->paging = $pager;
         // $theme->feat_image = $config['content']['defaults']['feat_image'];
         $theme->url = explode('?', $_SERVER["REQUEST_URI"], 2)[0];
 
