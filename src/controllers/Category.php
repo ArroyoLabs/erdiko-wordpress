@@ -19,23 +19,26 @@ class Category extends \erdiko\Controller
             throw new \Exception("No Category Specified");
 
         $category = $args['category'];
-
-        $theme = new \erdiko\theme\Engine;
         $view = "blog/post/list.html";
 
+        $theme = new \erdiko\theme\Engine;
         $content = new \erdiko\wordpress\models\Content;
-        // Get paging info
-        $pager = $content->getPagination($theme->getThemeField('pagesize'), $category);
 
+        // Get paging info
+        $pagerData = $content->getPagerData($theme->getThemeField('pagesize'));
         // Get posts
-        $posts = $content->getAllPosts($pager['pagesize'], $pager['offset'], $category);
+        $posts = $content->getAllPosts($pagerData['pagesize'], $pagerData['offset'], $category);
+        $count = $content->getCategoryCount($category);
+        $pager = $content->getPager($pagerData, $count);
+
+        $this->container->logger->debug("post ct: {$count}");
         
         $description = "Posts in category {$category}";
         $theme->title = ucfirst($category);
         $theme->subtitle = $description;
         $theme->category = $category;
         $theme->posts = $posts;
-        $theme->paging = $pager['pagination'];
+        $theme->paging = $pager;
         // $theme->feat_image = $config['content']['defaults']['feat_image'];
         $theme->url = explode('?', $_SERVER["REQUEST_URI"], 2)[0];
 
