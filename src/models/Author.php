@@ -1,8 +1,8 @@
 <?php
 /**
- * Wordpress Author model
+ * WordPress Author model
  *
- * @package   	erdiko/wordpress/models
+ * @package   	erdiko\wordpress\models
  * @copyright 	Copyright (c) 2017 Arroyo Labs, Inc. http://www.arroyolabs.com
  * @author		John Arroyo <john@arroyolabs.com>
  */

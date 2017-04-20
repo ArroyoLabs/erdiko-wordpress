@@ -1,12 +1,9 @@
 <?php
 /**
  * Wordpress Content Model
- * View/Service model to grab content from wordpress and render/theme that content
- * 
- * IMPORTANT this model requires the erdiko/erdiko-core package
- * You can install it using, composer require erdiko/erdiko-core
+ * Service model to query content from wordpress and render/theme that content
  *
- * @package   	erdiko/wordpress/models
+ * @package     erdiko\wordpress\models
  * @copyright 	Copyright (c) 2017 Arroyo Labs, Inc. http://www.arroyolabs.com
  * @author      John Arroyo <john@arroyolabs.com>
  * @author      Fangxiang Wang
@@ -17,8 +14,6 @@ use \erdiko\core\Helper as Erdiko;
 
 class Content extends \erdiko\wordpress\Model
 {
-    use \erdiko\wordpress\traits\ImageTrait;
-
     /**
      * Get posts list
      */
@@ -371,6 +366,29 @@ class Content extends \erdiko\wordpress\Model
         $data->post_content = \apply_filters('the_content', $data->post_content);
         
         return $data;
+    }
+
+    /**
+     * Parse and theme wordpress image caption
+     *
+     * @param post content
+     * @param index
+     * @todo clean up: why are we sending all the matches?
+     */
+    public function themeImage($matches, $i)
+    {
+        // Strip out image and caption
+        $original = $matches[5][$i];
+        preg_match_all('/(\<img.*?\/\>)/s', $matches[5][$i], $imgURL);
+        preg_match_all('/(?!.*\>)(.*)/s', $matches[5][$i], $caption);
+
+        // echo "<pre>original({$i}): ".print_r($matches[5][$i], true)."</pre>";
+        // echo "<pre>parsed({$i}): ".print_r($imgURL, true)."</pre>";
+        // echo "<pre>caption({$i}): ".print_r($caption, true)."</pre>";
+
+        $newTag = Erdiko::getView('image_w_caption', array('url' => $imgURL[0][0],
+            'caption' => $caption[0][0]), $this->getViewPath());
+        return $newTag;
     }
 
     /**

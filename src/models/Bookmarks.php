@@ -1,9 +1,9 @@
 <?php
 /**
- * Bookmarks Model
+ * WordPress Bookmarks Model
  * https://developer.wordpress.org/reference/functions/get_bookmarks/
  * 
- * @package     erdiko/wordpress/models
+ * @package     erdiko\wordpress\models
  * @copyright   Copyright (c) 2017 Arroyo Labs, Inc. http://www.arroyolabs.com
  * @author	    John Arroyo <john@arroyolabs.com>
  */

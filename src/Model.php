@@ -3,8 +3,7 @@
  * Wordpress Model
  * Base model every Wordpress model should inherit
  *
- * @category  	erdiko
- * @package   	wordpress
+ * @package   	erdiko\wordpress
  * @copyright 	Copyright (c) 2017, Arroyo Labs, http://www.arroyolabs.com
  * @author		John Arroyo, john@arroyolabs.com
  */

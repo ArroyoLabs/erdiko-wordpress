@@ -2,7 +2,7 @@
 /**
  * Author Controller
  *
- * @package     erdiko/wordpress/controllers
+ * @package     erdiko\wordpress\controllers
  * @copyright   Copyright (c) 2017, Arroyo Labs, www.arroyolabs.com
  * @author      John Arroyo, john@arroyolabs.com
  */

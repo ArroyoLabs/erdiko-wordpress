@@ -3,7 +3,7 @@
  * Bookmarks Controller
  * https://codex.wordpress.org/Function_Reference/get_bookmarks
  *
- * @package     erdiko/wordpress/controllers
+ * @package     erdiko\wordpress\controllers
  * @copyright   Copyright (c) 2017, Arroyo Labs, www.arroyolabs.com
  * @author      John Arroyo, john@arroyolabs.com
  */
