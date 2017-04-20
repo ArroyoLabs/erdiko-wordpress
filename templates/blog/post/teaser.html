@@ -1,15 +1,13 @@
 <div class="post-list-item">
-  {% set featImg = theme.feat_image %}
-  <div class="teaser-feat-img"><a href="{{ post.url }}">
-    <img src="{{ featImg }}"><h3>{{ post.post_title }}</h3></a>
+  <div class="teaser-feat-img"><a href="{{ post.ID | permalink }}">
+    <img src="{{ featured_image(post.ID, theme.feat_image) }}"><h3>{{ post.post_title }}</h3></a>
   </div>
-  {{ dump(post) }}
   <p class="post-teaser">
     {% if post.post_excerpt %}
       {{ post.post_excerpt }}
     {% else %}
-      {{ post.post_excerpt }}
+      {{ post.post_content | strip }}
     {% endif %}
   </p>
-  <div class="read-more"><a href="{{ post.url }}">Read more...</a></div>
+  <div class="read-more"><a href="{{ post.ID | permalink }}">Read more...</a></div>
 </div>
