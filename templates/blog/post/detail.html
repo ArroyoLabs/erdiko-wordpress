@@ -29,9 +29,7 @@
             </div>
         </div>
     </div>
+    {{ include('blog/post/comments.html') }}
   {% endif %}
-
-  <h3>Post</h3>
-  <pre>{{ dump(page.post) }}</pre>
-
+  
 {% endblock %}

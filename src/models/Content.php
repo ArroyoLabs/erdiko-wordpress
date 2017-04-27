@@ -6,7 +6,6 @@
  * @package     erdiko\wordpress\models
  * @copyright 	Copyright (c) 2017 Arroyo Labs, Inc. http://www.arroyolabs.com
  * @author      John Arroyo <john@arroyolabs.com>
- * @author      Fangxiang Wang
  */
 namespace erdiko\wordpress\models;
 
@@ -14,6 +13,8 @@ use \erdiko\core\Helper as Erdiko;
 
 class Content extends \erdiko\wordpress\Model
 {
+    public $defaultFeatImg = '/themes/clean-blog/img/post-bg.jpg';
+
     /**
      * Get posts list
      */
