@@ -21,9 +21,15 @@ if ( !isset($wp_did_header) ) {
 
 	$wp_did_header = true;
 
-	require_once( WORDPRESS_ROOT . '/wp-load.php' );
+	if (file_exists(WORDPRESS_ROOT . '/wp-load.php')) {
+		require_once( WORDPRESS_ROOT . '/wp-load.php' );
+	}
 
-	wp();
+	if (function_exists('wp')) {
+		wp();
+	} else {
+		throw new \Exception("There was an error trying to load WordPress",-104);
+	}
 
 	//require_once( ABSPATH . WPINC . '/template-loader.php' );
 }
