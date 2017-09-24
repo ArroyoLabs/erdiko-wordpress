@@ -1,5 +1,4 @@
-erdiko-wordpress
-================
+#erdiko/wordpress (erdiko-wordpress)
 
 * Run your WordPress site headless
 
@@ -8,59 +7,64 @@ erdiko-wordpress
 You can use this module with any composer based php framework by simply running, composer require erdiko/wordpress.
 
 
-Installation
-------------
+##Installation
 
 **1. Install WordPress**
 
-We recommend installing WordPress in /lib/wordpress or its own folder at the same level as your main site. For instance /wordpress and /[my-website].  However it can be anywhere as long is the codebase is accessible. Follow the WordPress docs on how to install WordPress.
-
-***Important*** If your WordPress codebase is in /lib/wordpress and /lib is at the same level as your vendor folder then you can skip the rest of step #1.
-
-Add this to your codebase.
-```
-    define('WORDPRESS_ROOT', '/this/is/the/wordpress/path');
-```
-
-This could be added in a constants file, bootstrap file or index.php. Follow the conventions of your framework. If you are using Erdiko it should go in the /[my-website]/app/appstrap.php file.
-
+We recommend installing WordPress in vendor/wordpress or its own folder at the same level as your main site. For instance /wordpress and /[my-webroot].  However it can be anywhere as long is the codebase is accessible. Follow the WordPress docs on how to install WordPress.
 
 **2. Add the erdiko/wordpress package using composer**
 
 ```
-    composer require erdiko/wordpress
+composer require erdiko/wordpress
 ```
 
-Usage
------
+**3. Add environment variables
+
+This can be done directly in your
+
+```
+WORDPRESS_ROOT=/wordpress
+WORDPRESS_DOMAIN_CURRENT_SITE=local.cms.arroyolabs.com
+```
+
+
+##Usage
 
 Here are some examples of how to use this package. See the source code for the full API.
 
 To pull content from WordPress
 
-	$model = new \erdiko\wordpress\Model;
-	$post = $model->getPost(1);
+```
+$model = new \erdiko\wordpress\Model;
+$post = $model->getPost(1);
+```
 
 To get an Author
 
-	$author = new \erdiko\wordpress\models\Author;
-	$author->getAuthor('name');
+```
+$author = new \erdiko\wordpress\models\Author;
+$author->getAuthor('name');
+```
 
 Get all posts
 
-	$content = new \erdiko\wordpress\models\Content;
-	$content->getAllPosts();
+```
+$content = new \erdiko\wordpress\models\Content;
+$content->getAllPosts();
+```
 
 
-Create a full headless site with Erdiko
----------------------------------------
+## Create a full headless site with Erdiko
 
 These additional instructions are for creating a complete headless blog using Erdiko. All CMS data is coming from WordPress and is rendered in a clean bootstrap based theme. We have included controllers, models, views and a full theme.
 
 **1. Install Erdiko**
 Using composer, it is a very simple to create an erdiko project.
 
-	composer create erdiko/erdiko [my-project-name]
+```
+composer create erdiko/erdiko [my-project-name]
+```
 
 More information available at [http://erdiko.org](http://erdiko.org/)
 
@@ -89,13 +93,12 @@ Theme is based on css from the [Start Bootstrap](https://startbootstrap.com/temp
 **4. Add a symlink for the uploaded files (optional)**
 
 ```
-	mkdir -p public/wp-content
-	cd public/wp-content
-	ln -s ../../../lib/wordpress/wp-content/uploads uploads
+mkdir -p public/wp-content
+cd public/wp-content
+ln -s ../../../lib/wordpress/wp-content/uploads uploads
 ```
 
-Notes
------
+##Notes
 
 We welcome your feedback. Let us know how we can improve this package.
 

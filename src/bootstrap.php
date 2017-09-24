@@ -11,8 +11,7 @@
 
 define('WP_USE_THEMES', false);
 
-// if not set in the appstrap.php (or elsewhere) default it to lib/wordpress
-
+// If not set in the appstrap.php (or elsewhere) default it to vendor/wordpress
 if(empty(getenv("WORDPRESS_ROOT")))
     putenv("WORDPRESS_ROOT=".getenv("ERDIKO_ROOT")."/vendor/wordpress");
 

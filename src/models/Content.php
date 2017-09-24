@@ -18,10 +18,21 @@ class Content extends \erdiko\wordpress\Model
     /**
      * Get posts list
      */
-    public function getAllPosts($pageSize = -1, $offset = 0, $category = '', $tag = '')
+    public function getPosts($args)
+    {
+        $posts = \get_posts( $args );
+
+        return $posts;
+    }
+
+    /**
+     * Get posts list
+     * @deprecated
+     */
+    public function getAllPosts($postType = 'post', $pageSize = 10, $offset = 0, $category = '', $tag = '')
     {
         $args = array(
-            'posts_per_page'   => $pageSize,
+            'numberposts'   => $pageSize,
             'offset'           => $offset,
             'category'         => '',
             'category_name'    => $category,
@@ -31,14 +42,16 @@ class Content extends \erdiko\wordpress\Model
             'exclude'          => '',
             'meta_key'         => '',
             'meta_value'       => '',
-            'post_type'        => 'post',
+            'post_type'        => $postType,
             'post_mime_type'   => '',
             'post_parent'      => '',
-            'author'	   => '',
+            'author'	       => '',
             'post_status'      => 'publish',
             'suppress_filters' => true,
         );
         $posts_array = \get_posts( $args );
+        // error_log("posts: ".print_r($posts_array, true));
+
         return $posts_array;
     }
 
@@ -110,7 +123,7 @@ class Content extends \erdiko\wordpress\Model
           $postId = \url_to_postid($args);
 
         $post = \get_post($postId);
-        
+
         if(empty($post)) {
           $post = $this->getPost404();
         } else {
@@ -164,7 +177,7 @@ class Content extends \erdiko\wordpress\Model
         // Get formatted post dates
         $postDate = date('c', strtotime($post->post_date));
         $updateDate = date('c', strtotime($post->post_modified));
-        
+
         // Description & author
         $meta['description'] = $description;
         $meta['author'] = $post->author->display_name;
@@ -207,7 +220,7 @@ class Content extends \erdiko\wordpress\Model
         // Override any default meta values (from post) with $additional meta supplied
         if(!empty($additional))
             $meta = array_merge($meta, $additional);
-        
+
         return $meta;
     }
 
@@ -225,7 +238,7 @@ class Content extends \erdiko\wordpress\Model
         "display_name"  => $author->display_name,
         "profile_url"   => "/author/".$author->user_nicename
         );
-    
+
       return $shortProfile;
     }
 
@@ -307,7 +320,7 @@ class Content extends \erdiko\wordpress\Model
 
     /**
      * Get rendered tag links
-     * 
+     *
      * @param string $html
      */
     public function getTagLinks($post)
@@ -380,7 +393,7 @@ class Content extends \erdiko\wordpress\Model
 
         // This adds additional styling by WordPress (mostly P tags to space out elements/images)
         $data->post_content = \apply_filters('the_content', $data->post_content);
-        
+
         return $data;
     }
 
@@ -528,7 +541,7 @@ class Content extends \erdiko\wordpress\Model
     public function getPagerData($defaultPagesize = 10)
     {
         $pager = array();
-        $pager['pagesize'] = empty($_REQUEST['pagesize']) 
+        $pager['pagesize'] = empty($_REQUEST['pagesize'])
             ? $defaultPagesize : $_REQUEST['pagesize'];
         $pager['page'] = empty($_REQUEST['page']) ? 1 : $_REQUEST['page'];
         $pager['offset'] = $pager['page'] * $pager['pagesize'] - $pager['pagesize'];
@@ -569,7 +582,7 @@ class Content extends \erdiko\wordpress\Model
     {
         $pager = array();
 
-        $pager['pagesize'] = empty($_REQUEST['pagesize']) ? 
+        $pager['pagesize'] = empty($_REQUEST['pagesize']) ?
             $defaultPagesize : $_REQUEST['pagesize'];
         $pager['page'] = empty($_REQUEST['page']) ? 1 : $_REQUEST['page'];
         $pager['offset'] = $pager['page'] * $pager['pagesize'] - $pager['pagesize'];

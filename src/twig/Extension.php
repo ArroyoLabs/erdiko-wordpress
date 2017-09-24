@@ -8,13 +8,13 @@ class Extension extends \Twig_Extension
     {
         return array(
             new \Twig_Filter('strip', array($this, 'stripTrim')),
-            new \Twig_Filter('permalink', array($this, 'getHeadlessPermalink')),
         );
     }
 
     public function getFunctions()
     {
         return array(
+            new \Twig_Function('permalink', array($this, 'getHeadlessPermalink')),
             new \Twig_Function('featured_image', array($this, 'getFeaturedImage')),
         );
     }
