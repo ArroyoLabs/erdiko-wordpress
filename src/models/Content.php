@@ -1,6 +1,6 @@
 <?php
 /**
- * Wordpress Content Model
+ * WordPress Content Model
  * Service model to query content from wordpress and render/theme that content
  *
  * @package     erdiko\wordpress\models
@@ -9,7 +9,7 @@
  */
 namespace erdiko\wordpress\models;
 
-use \erdiko\core\Helper as Erdiko;
+use \erdiko\Helper as Erdiko;
 
 class Content extends \erdiko\wordpress\Model
 {
@@ -303,13 +303,13 @@ class Content extends \erdiko\wordpress\Model
      *
      * @param string $html
      */
-    public function getCategoryLinks($post)
+    public function getCategoryLinks($post, $path="/category")
     {
         $html = "";
 
         foreach($post->categories as $idx => $category)
         {
-            $html .= "<a href=\"/category/{$category->slug}\">{$category->name}</a>";
+            $html .= "<a href=\"{$path}/{$category->slug}\">{$category->name}</a>";
             if($idx < (count($post->categories) - 1)) {
                 $html .= ", ";
             }
@@ -323,13 +323,13 @@ class Content extends \erdiko\wordpress\Model
      *
      * @param string $html
      */
-    public function getTagLinks($post)
+    public function getTagLinks($post, $path="/tag")
     {
         $html = "";
 
         foreach($post->tags as $idx => $tag)
         {
-            $html .= "<a href=\"/tag/{$tag->slug}\">{$tag->name}</a>";
+            $html .= "<a href=\"{$path}/{$tag->slug}\">{$tag->name}</a>";
             if($idx < (count($post->tags) - 1)) {
                 $html .= ", ";
             }
@@ -534,6 +534,14 @@ class Content extends \erdiko\wordpress\Model
         return $newTag;
     }
 
+    public function getOffset($page, $pagesize)
+    {
+        if(empty($page))
+            return 0;
+
+        return $page * $pagesize - $pagesize;
+    }
+
     /**
      * Get pagination data
      * @return array $pager
@@ -570,7 +578,8 @@ class Content extends \erdiko\wordpress\Model
             'previous' => $previous,
             'next' => $next,
             'count' => $count,
-            'offset' => $pagerData['offset']
+            'offset' => $pagerData['offset'],
+            'url' => explode("?", $_SERVER['REQUEST_URI'])[0]
             );
     }
 
@@ -597,15 +606,15 @@ class Content extends \erdiko\wordpress\Model
         return $countPosts->publish;
     }
 
-    public function getCategoryCount($category)
+    public function getCategoryCount($category, $catType = 'category')
     {
-        $term = \get_term_by('slug', $category, 'category');
+        $term = \get_term_by('slug', $category, $catType);
         return $term->count;
     }
 
-    public function getTagCount($tag)
+    public function getTagCount($tag, $tagType = 'post_tag')
     {
-        $term = \get_term_by('slug', $tag, 'post_tag');
+        $term = \get_term_by('slug', $tag, $tagType);
         return $term->count;
     }
 }

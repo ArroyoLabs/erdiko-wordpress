@@ -1,6 +1,6 @@
 <?php
 /**
- * Wordpress Model
+ * WordPress Model
  * Base model every Wordpress model should inherit
  *
  * @package   	erdiko\wordpress
@@ -33,5 +33,10 @@ class Model
 		// $title = $post->post_title;
 
 		return $post;
+	}
+
+	public function getViewPath()
+	{
+		return getenv("ERDIKO_ROOT")."/vendor/erdiko/wordpress";
 	}
 }

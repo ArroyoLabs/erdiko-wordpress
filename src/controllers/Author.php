@@ -13,7 +13,7 @@ class Author extends \erdiko\Controller
 {
     use \erdiko\theme\traits\Controller;
 
-    public function __invoke($request, $response, $args) 
+    public function __invoke($request, $response, $args)
     {
         // $this->container->logger->debug("/wordpress/".$args['author']);
         $view = "blog/author/detail.html";
@@ -25,7 +25,7 @@ class Author extends \erdiko\Controller
 
         // Add author metadata
         $meta = [
-            "description" => "Profile for {$theme->author->user->display_name}", 
+            "description" => "Profile for {$theme->author->user->display_name}",
             "author" => $author->user->display_name
             ];
         $theme->addMeta($meta);

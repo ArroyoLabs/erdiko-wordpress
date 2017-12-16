@@ -19,18 +19,17 @@ class Author extends \erdiko\wordpress\Model
         return dirname(__DIR__);
     }
 
-    public function getGravitarUrl($user, $size = 100)
+    public function getGravitarUrl($user, $size)
     {
-        $default = "http://www.somewhere.com/homestar.jpg"; // @todo put this somewhere
-        return "http://www.gravatar.com/avatar/" . md5( strtolower( trim( $user->user_email ) ) ) . 
-            "?d=" . urlencode( $default ) . "&s=" . $size;
+        return "http://www.gravatar.com/avatar/" . md5( strtolower( trim( $user->user_email ) ) ) .
+            "?d=" . urlencode( getenv("WORDPRESS_DEFAULT_USER_IMG") ) . "&s=" . $size;
     }
 
-    public function getAuthor($name)
+    public function getAuthor($name, $size = 200)
     {
         $user = get_user_by('slug', $name);
         $meta = get_user_meta($user->ID);
-        $gravitar = $this->getGravitarUrl($user);
+        $gravitar = $this->getGravitarUrl($user, $size);
 
         return (object)['user' => $user, 'meta' => $meta, 'gravitar' => $gravitar];
     }
