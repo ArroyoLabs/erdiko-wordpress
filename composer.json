@@ -14,6 +14,9 @@
         "vendor-dir": "vendor",
         "minimum-stability": "dev"
     },
+		"require": {
+    	"guzzlehttp/guzzle": "~6.0"
+   	},
      "autoload": {
         "psr-4": {
             "erdiko\\wordpress\\": "src/"

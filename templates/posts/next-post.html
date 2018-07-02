@@ -1,0 +1,13 @@
+<div class="container container-next-post">
+  <h3>Next Post</h3>
+  <div class="card-deck next-post">
+    <div class="card card-inverse rounded">
+      <img class="card-img" src="{{ page.next_post.feat_image }}" alt="Card image">
+      <div class="card-img-overlay">
+        <h4 class="card-title">{{page.next_post.post_title}}</h4>
+        <p class="card-text">{{ page.next_post.post_excerpt }}</p>
+        <a href="{{ permalink(page.next_post.ID) }}" class="btn btn-secondary">Read More</a>
+      </div>
+    </div>
+  </div>
+</div>

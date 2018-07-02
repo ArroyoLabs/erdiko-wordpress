@@ -1,0 +1,9 @@
+{% extends "page.html" %}
+
+  {% block body %}
+    {{ include("views/section/header.html") }}
+    {{ include("posts/cards.html") }}
+    {{ include("posts/pager.html") }}
+    {{ include("views/contact.html") }}
+    {{ include("views/newsletter.html") }}
+  {% endblock %}

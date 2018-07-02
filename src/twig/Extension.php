@@ -31,25 +31,32 @@ class Extension extends \Twig_Extension
 
     /**
      * Get headless friendly permalink
-     * @param int $postId
-     * @return string $link
+     * @param string $link
+     * @return string $url
      */
-    function getHeadlessPermalink($postId)
+    function getHeadlessPermalink($link)
     {
-        $url = get_permalink($postId);
-        return str_replace( home_url(), "", $url ); // strip domain (since it's headless)
+        return str_replace( home_url(), "", $link ); // strip domain (since it's headless)
     }
 
     /**
-     * Get the featured image for a post
-     * @param int $postId
-     * @param boolean $useDefault if true return default image if none found
+     * Get the featured image for a given post
+     * @param object $post
+     * @param string $default default image url, used when there is no featured
      * @return string $imageUrl
      */
-    public function getFeaturedImage($postId, $default = '/themes/clean-blog/img/post-bg.jpg')
+    public function getFeaturedImage($post, $default = '/themes/clean-blog/img/post-bg.jpg')
     {
-        $featImg = \wp_get_attachment_url( \get_post_thumbnail_id($postId) );
-        if(empty($featImg))
+		// get from embed, if embed empty grab from another api call, if no embed use default.
+		if ( !empty( $post->_embedded->{'wp:featuredmedia'}[0]->source_url )) {
+			$featImg = $post->_embedded->{'wp:featuredmedia'}[0]->source_url;
+
+		} elseif ( empty($post->_embedded->{'wp:featuredmedia'}) ) {
+			// make an API call for the featured image?
+            // $post->_links->{'wp:featuredmedia'}[0]['href'];
+		}
+
+        if( empty($featImg) )
             $featImg = $default;
 
         return $featImg;

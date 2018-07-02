@@ -1,0 +1,31 @@
+{% if page.pager.pages > 1 %}
+  <div class="container-fluid container-notop" id="post-pager">
+    <nav aria-label="Page navigation example">
+      <ul class="pagination pagination-lg justify-content-center">
+        {% if page.pager.previous != null %}
+        <li class="page-item">
+          <a href="{{page.pager.url}}?page={{page.pager.previous}}" aria-label="Previous Page" class="page-link">
+            <span aria-hidden="true">&#8592;&nbsp;</span>
+          </a>
+        </li>
+        {% endif %}
+        {% for i in 1..page.pager.pages %}
+          {% if i == page.pager.page %}
+            <li class="page-item active">
+              <a href="{{page.pager.url}}?page={{i}}" class="page-link">{{i}} <span class="sr-only">(current)</span></a>
+            </li>
+          {% else %}
+            <li class="page-item"><a href="{{page.pager.url}}?page={{i}}" class="page-link">{{i}}</a></li>
+          {% endif %}
+        {% endfor %}
+        {% if page.pager.next != null %}
+        <li class="page-item">
+          <a href="{{page.pager.url}}?page={{page.pager.next}}" aria-label="Next Page" class="page-link">
+            <span aria-hidden="true">&nbsp;&#8594;</span>
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+{% endif %}

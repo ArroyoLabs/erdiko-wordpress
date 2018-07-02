@@ -10,6 +10,7 @@ namespace erdiko\wordpress\models;
 
 
 class Author extends \erdiko\wordpress\Model
+    implements \erdiko\wordpress\AuthorInterface
 {
     /**
      * get path for views

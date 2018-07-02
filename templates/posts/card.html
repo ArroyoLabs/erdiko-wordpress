@@ -1,0 +1,8 @@
+<div class="card card-inverse card-type-{{ post.type | default('post') }}">
+  <img class="card-img border-0" src="{{ featured_image(post, theme.featured_image) }}" alt="Card image">
+  <div class="card-img-overlay">
+    <h4 class="card-title">{{ post.title.rendered | raw }}</h4>
+    <div class="card-text">{{ post.excerpt.rendered | raw }}</div>
+    <a href="{{ permalink(post.link) }}" class="btn btn-secondary">Read More</a>
+  </div>
+</div>

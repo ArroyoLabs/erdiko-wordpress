@@ -1,0 +1,11 @@
+<pre>{{ page.debug }}</pre>
+
+<div class="container-fluid container-notop container-{{ page.post_type | default('post') }}">
+  <div>
+
+    {% for post in page.posts %}
+      {{ include("posts/card.html") }}
+    {% endfor %}
+
+  </div>
+</div>

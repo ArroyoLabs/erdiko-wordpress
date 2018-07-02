@@ -1,17 +1,15 @@
 <?php
 /**
- * Wordpress Content Model
- * Service model to query content from wordpress and render/theme that content
+ * Wordpress Post Model
+ * Service to pull content from wordpress
  *
  * @package     erdiko\wordpress\models
- * @copyright 	Copyright (c) 2017 Arroyo Labs, Inc. http://www.arroyolabs.com
+ * @copyright 	Copyright (c) 2018 Arroyo Labs, Inc. http://www.arroyolabs.com
  * @author      John Arroyo <john@arroyolabs.com>
  */
 namespace erdiko\wordpress\models;
 
-use \erdiko\Helper as Erdiko;
-
-class Content extends \erdiko\wordpress\Model
+class LegacyPost extends \erdiko\wordpress\Model
     implements \erdiko\wordpress\ContentInterface
 {
     public $defaultFeatImg = '/themes/clean-blog/img/post-bg.jpg';

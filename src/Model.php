@@ -1,6 +1,6 @@
 <?php
 /**
- * WordPress Model
+ * Wordpress Model
  * Base model every Wordpress model should inherit
  *
  * @package   	erdiko\wordpress

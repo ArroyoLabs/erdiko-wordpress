@@ -8,7 +8,6 @@
  */
 namespace erdiko\wordpress\controllers;
 
-
 class Posts extends \erdiko\Controller
 {
     use \erdiko\theme\traits\Controller;

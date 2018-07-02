@@ -16,8 +16,7 @@ class Content extends \erdiko\Controller
     public function __invoke($request, $response, $args) 
     {
         $postUrl = isset($args['post_url']) ? $args['post_url'] : implode('/', $args);
-
-        $this->container->logger->debug("/wordpress/".$postUrl);
+        // $this->container->logger->debug("wordpress: ".$postUrl);
 
         $theme = new \erdiko\theme\Engine;
         $view = "blog/post/detail.html";
